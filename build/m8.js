@@ -412,15 +412,6 @@ return Object.defineProperty( obj, 'length', { get:
         }
     }});
 };
-MatrixFn = function(){
-return function(){
-
-    if( arguments.length > 1) {
-        return Matrix.create.apply( this, arguments);
-    } else {
-        return Matrix.wrap.apply( this, arguments);
-    }
-};};
 
 staticDescriptor = {
 
@@ -458,28 +449,24 @@ staticDescriptor = {
 
 
         var ret= 0,
-            i=0;
-        if( !Matrix.isSquare(arr)){
-            return 0;
-        }
-        if( arr.length === 1){
+            m=arr.length, n= arr[0].length,
+            i=n, firstrow;
+        if( m === 1){
 
             return arr[0][0];
         }
-        if( arr.length === 2){
+        if( m === 2){
 
             return arr[0][0] * arr[1][1] - arr[0][1] * arr[1][0];
         }
-        for(; i< arr[0].length; ++i){
-            if( arr[0][i] !== 0){
+        firstrow = arr[0];
+        while( i--){
+            if( firstrow[i]){
 
-                ret += arr[0][i] * Math.pow( -1, i) * Matrix.det( Matrix.cut( arr, 0, i));
+                ret += firstrow[i] * ( i & 1 ? -1 : 1) * Matrix.det( Matrix.cut( arr, 0, i));
             }
         }
         return ret;
-    }},
-    isMatrix: { value: function( that){
-        return this.prototype.isPrototypeOf( that);
     }},
     cut:{value: function( arr, i, j){
 
@@ -565,6 +552,9 @@ instanceDescriptor = {
         return that;
     }},
     det: {value: function(){
+        if( !Matrix.isSquare( this)){
+            return 0;
+        }
         return Matrix.det( this.toArray());
     }},
     equals: {value: function( other){
