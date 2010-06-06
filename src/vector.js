@@ -10,6 +10,18 @@ var Vector = Class.create({
             enumerable: false,
             configurable: true,
             writable: true
+        },
+        wrap: {
+            value: function( arr){
+                if( Array.prototype.isPrototypeOf( arr) && typeof arr[0] === "number"){
+                    return Vector.wrap([ arr]).transpose();
+                } else {
+                    return MatrixBase.wrap.call( this, arr);
+                }
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
         }
     },
     "instance":{
