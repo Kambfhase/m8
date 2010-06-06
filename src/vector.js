@@ -4,7 +4,7 @@
 var Vector = Class.create({
     parent: MatrixBase,
     "static":{
-        create: { value: function( arr, inital){
+        create: { value: function( arr, initial){
                 return this.wrap( arguments.length > 1 || typeof arr === "number" ? this.rectangle( arr, 1, initial) : arr);
             }, 
             enumerable: false,
