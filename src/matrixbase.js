@@ -150,13 +150,13 @@ var klass = Class.create({
             enumerable: false
         },
         equals: { value: function( other){
-                var i= this.length; j;
+                var i= this.length, j;
                 if( i !== other.length){
                     return false;
                 }
                 while( i--){
-                    j= this[i].length;
-                    if( j !== other.length){
+                    j= this[ i].length;
+                    if( j !== other[i].length){
                         return false;
                     }
                     while( j--){
