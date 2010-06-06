@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+<head>
+   <title>m8 - a JavaScript Math Library</title>
+   <style>
+body {
+    background-image: -moz-linear-gradient( left, #FFF, #FFF, #EFEFFF);
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+}
+nav {
+    width: 150px;
+    border-right: thin solid #ccf;
+    border-bottom: thin solid #ccf;
+    background-image: -moz-linear-gradient( left,#FFF, #FFF, #EFEFFF);
+    height: 100%;
+    float:left;
+}
+nav > h1 {
+    font-size: 16px;
+    background-color: #eef;
+}
+nav li {
+    
+}
+#banner {
+    background-image: -moz-linear-gradient(top, #EEF, #DDF);
+    display: block;
+    border-bottom: thin solid #CCF;
+    text-shadow: #EEE 0px 0px 2px;
+    padding-left: 5px;
+}
+.content {
+    height: 100%;
+    margin-left: 200px;
+    float: none;
+}
+.content > h2 {
+    width: 100%;
+    border-bottom: thin solid #ccf;
+    background-image: -moz-linear-gradient( right ,#EFEFFF, #FFF, #EFEFFF);
+}
+code {
+    font-size: 14px;
+}
+#about ~ div{
+    display: none;
+}
+b + p {
+    margin-left: 15px;
+}
+   </style>
+</head>
+<body>
+<div id="banner">
+m8 > About
+</div>
+<nav id="nav">
+    <a href="JavaScript: void 0;">About</a><br/>
+    <h1>Classes</h1>
+    <ul>
+        <li><a href="JavaScript: void 0;">Class</a></li>
+        <li><a href="JavaScript: void 0;">MatrixBase</a></li>
+        <li><a href="JavaScript: void 0;">Matrix</a></li>
+        <li><a href="JavaScript: void 0;">Vector</a></li>
+    </ul>
+</nav>
+<div id="bla">
+<div id="about" class="content">
+    <h1>Welcome to the m8 JavaScript Math Library</h1>
+    <p>In the past, JavaScript has been mainly used for Web applications. But with v8, ES5 and Webworkers it can be used for high- computation programs, too! That is what m8 was developed for.</p>
+    <p>m8 relies on some ES5 features like Array.prototype.map and property descriptors. Some of these features are already available in browsers, others are not. So m8 also includes parts of the <a href="http://code.google.com/p/vice-versa/">vice-versa library</a> from <a href="http://webreflection.blogspot.com/">Andrea Giammarchi</a>.</p>
+    <p>If your browser is HTML5 ready and capable of rendering MathML you will see an example of m8 below. if your browser does not yet support the &lt;math&gt;-tag you will most likely just see the JS-Code followed by some screwed up numbers.<br/> If you use Firefox 3.6 you can enable the HTML5 support by turning the <code>html5.enable</code> option in the config to true.</p>
+    <div class="example">
+        <code>
+            Matrix(2,2,3).add( Matrix([[0,1],[1,2]]))
+        </code>
+        <math>
+        <mrow>
+        <mfenced><mtable>
+            <mtr><mtd><mn>2</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+            <mtr><mtd><mn>2</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+        </mtable></mfenced>
+        <mo>+</mo>
+        <mfenced><mtable>
+            <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr>
+            <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+        </mtable></mfenced>
+        </mrow>
+        <mo>=</mo>
+        <mfenced><mtable>
+            <mtr><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
+            <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
+        </mtable></mfenced>
+        <math>
+    </div>
+    <p>Other JavaScript Math Libraries are <a href="http://sylvester.jcoglan.com/">Sylvester</a> or <a href="http://code.google.com/p/closure-library/source/browse/trunk/closure/goog/math/">Google Closure</a></p>
+    <p>Now start calculating or hop on to github for the source code!</p>
+</div>
+<div id="class" class="content">
+    <h1>Class</h1>
+    <p>The Class module in class.js allows "double inheritance". Unlike John Resig's "simple inheritence" child classes also inherit static methods from the parents. The created classes to not need a new operator for instantiating a new object. Due to technical limits Class is not an instance of Class.</p>
+    <h2>constructor</h2>
+        <b>Class( obj )</b>
+        <p>Class( obj ) will return a new class based on the obj it is passed. If you want to be JSLint compliant you can also use Class.create( obj). <br/>
+        <code>obj.parent</code> The class to inherit from.<br/>
+        <code>obj.static</code> A map of properties with correspondig static property descriptors.<br/>
+        <code>obj.instance</code> A map of property descriptors to be added to the classes prototype.<br/>
+        The returned object( called klass from now on) has some special features:<br/>
+        <code>klass( arguments)</code> is a shortcut for <code>klass.create( arguments)</code><br/>
+        <code>klass.create( arguments)</code> defaults to <code>Object.create( this.prototype)</code><br/>
+        <code>klass.is( obj)</code>> dafaults to <code>return this.prototype.isPrototypeOf( obj)</code></p>
+<code><pre>var JavaScriptNinja = Class.create({ 
+    "parent": Ninja,
+    "instance": {
+        "hack": {
+            value: function(){ /* ... hack something */},
+            enumerable: false
+        }
+    }
+});</pre></code>
+    <h2>static</h2>
+        <b>Class.is( obj)</b>
+        <p>Always returns <code>false</code>.</p>
+        <b>Class.create( obj)</b>
+        <p>See the Constructor above</p>
+</div>
+<div id="matrixbase" class="content">
+    <h1>MatrixBase</h1>
+    <b>inherits from Array</b>
+    <p>MatrixBase is an abstract class to combine the common methods of Vector and Matrix.</p>
+    <h2>constructor</h2>
+        <p>A shortcut for MatrixBase.create( arguments) see below.</p>
+        <b>MatrixBase( m, n, initial)</b>
+        <p>A Shortcut for MatrixBase.rectangle</p>
+        <b>MatrixBase( arr)</b>
+        <p>A shortcut for MatrixBase.wrap( arr) see below.</p>
+    <h2>static</h2>
+        <b>MatrixBase.create( m, n[, initial])</b>
+        <p>Returns a new instance of MatrixBase.prototype with m rows and n coloums where intitial is the default value.</p>
+<code><pre>MatrixBase( 3, 3, 2)</pre></code>
+        <b>MatrixBase.create( arr)</b>
+        <p>Returns MatrixBase.wrap( arr) see below.</p>
+        <b>MatrixBase.wrap( arr)</b>
+        <p>Returns a new MatrixBase instance with the properties specified by arr.</p>
+<code><pre>MatrixBase([[1,2],[3,4]]).method().chaning()</pre></code>
+        <b>MatrixBase.rectangle( m, n [, intial])</b>
+        <p>Returns a matrix like array with m rows and n coloums where intitial is the default value.</p>
+        <b>MatrixBase.deepArrayCopy( arr)</b>
+        <p>Copies an array. (No shit, Sherlock!)</p>
+        <b>MatrixBase.sameDimensions()</b>
+        <p>Returns true if al passed arrays have the same dimensions.</p>
+        <b>MatrixBase.precision</b>
+        <p>JavaScript is only as precise as defined by IEEE 754. So MatrixBase.precision is use for comparision.</p>
+        <b>MatrixBase.is( obj)</b>
+        <p>returns true if obj is an instance of MatrixBase.prototype</p>
+    <h2>instance</h2>
+        <b>MatrixBase.prototype.copy()</b>
+        <p>Returns a copy of this.</p>
+        <b>MatrixBase.prototype.toArray()</b>
+        <p>Turns this object into an Array.</p>
+        <b>MatrixBase.prototype.toString()</b>
+        <p>Well, you can imagine.</p>
+        <b>MatrixBase.prototype.length</b>
+        <p>Unfortunately Array.prototype.length does not work on non-Array objects. Therefor I had to reimplemented it in pure JavaScript which is kinda nasty and slow. I encourage you to always cache the length.</p>
+        <b>MatrixBase.prototype.transpose()</b>
+        <p>flips this matrix.</p>
+        <b>MatrixBase.prototype.add( other)</b>
+        <p>adds two matrices</p>
+        <b>MatrixBase.prototype.mult( other)</b>
+        <p>multiples two matrices</p>
+        <b>MatrixBase.prototype.equals( other)</b>
+        <p>returns true if this and other matrix are equals with respect to MatrixBase.precision.</p>
+</div>
+<div id="vector" class="content">
+    <h1>Vector</h1>
+    <p>inherits from MatrixBase</p>
+    <h2>contructor</h2>
+        <p>passes thorugh to Vector.create()</p>
+    <h2>static</h2>
+        <b>Vector.create</b>
+        <p>Passes through to Vector.wrap if the first argument is an Array. Else passes through to Vector.rectangle.</p>
+    <h2>instance</h2>
+        <b>Vector.prototype.scale</b>
+        <p>Scales a Vector by a factor called lambda.</p>
+<code><pre>Vector([[3,9]]).scale(1/3)</pre></code>
+        <b>Vector.prototype.transpose</b>
+        <p>Transposes the vector.</p>
+        <b>Vector.prototype.add</b>
+        <p>Adds an other vector to the this vector.</p>
+<code><pre>Vector([[1,2]]).add([[2,1]])</pre></code>
+        <b>Vector.prototype.mult</b>
+        <p>Multiplies two vectors. Note: this is the matrixmultiplikation!</p>
+        <b>Vector.prototype.magnitude</b>
+        <p>Returns the "length" of the vector.</p>
+        <b>Vector.prototype.dot</b>
+        <p>Returns the dot product of two vectors.</p>
+        
+</div>
+<div id="matrix" class="content">
+    <h1>Matrix</h1>
+        <p>inherits from MatrixBase</p>
+    <h2>Constructor</h2>
+        <p>See Matrix.create below.</p>
+    <h2>static</h2>
+        <b>Matrix.create()</b>
+        <p>passes through to Matrix.rectangle if 2 or more arguments are supplied. Else Matrix.wrap is called</b>
+        <b>Matrix.isRectangular( arr)</b>
+        <p>returns true if the given array is a rectangle</p>
+        <b>Matrix.isSquare( arr)</b>
+        <p>returns true if the given array is a square</p>
+        <b>Matrix.identity( n)</b>
+        <p>Returns the n'th identity matrix</p>
+<code><pre>Matrix.identity(3) => [[1,0,0],[0,1,0],[0,0,1]]</pre></code>
+        <b>Matrix.det( arr)</b>
+        <p>Recursively calculates the determinant of a matrix. For now it is kinda slow since it always uses Laplace expansion along the first row.</p>
+        <b>Matrix.cut( arr, i, j)</b>
+        <p>returns arr without row i and col j</p>
+    <h2>instance</h2>
+        <b>Matrix.prototype.copy()</b>
+        <p>Returns a deep copy of this Matrix instance</p>
+        <b>Matrix.prototype.add( other)</b>
+        <p>Adds this and the other matrix</p>
+        <b>Matrix.prototype.scale( lambda)</b>
+        <p>returns a new Matrix where each entry is old_entry * lambda</p>
+        <b>Matrix.prototype.mult( other)</b>
+        <p>returns the matrix product if this and other</p>
+        <b>Matrix.prototype.transpose()</b>
+        <p>flips this matrix</p>
+        <b>Matrix.prototype.adjugate()</b>
+        <p>calculates the adjugate matrix correspondig to this one.</p>
+        <b>Matrix.prototype.invert()</b>
+        <p>Returns this matrix inverted, if possible.</p>
+        <b>Matrix.prototype.row( i)</b>
+        <p>returns the i-th row</p>
+        <b>Matrix.prototype.col( j)</b>
+        <p>returns the j-th coloumn</p>
+        <b>Matrix.prototype.det()</b>
+        <p>passes through to Matrix.det( this).</p>
+        <b>Matrix.prototype.equals( other)</b>
+        <p>Returns true if this Matrix equals other.</p>
+</div>
+</div>
+<script src="jquery-1.4.2.min.js"></script>
+<script>
+$('#nav').delegate('a','click',function(){
+    var name = this.textContent.toLowerCase();
+    $('#'+name).show().siblings().hide();
+});
+</script>
+</body>
+</html>

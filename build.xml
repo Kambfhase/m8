@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="m8" default="dist" basedir=".">
+    
+    <property name="build" location="build" />
+    <property name="src"   location="src" />
+    <property name="dist"  location="dist" />
+    <property name="tools" location="tools" />
+    <property name="3rd"   location="3rd" />
+    <property name="temp"  location="temp" />
+    
+    <target name="init">
+        <delete dir="${temp}" />
+        <tstamp />
+        <mkdir dir="${build}" />
+        <mkdir dir="${temp}" />
+    </target>
+
+    <target name="matrix" depends="init">
+        <copy todir="${temp}">
+            <fileset dir="${src}" includes="*.js" />
+        </copy>
+       
+        <apply executable="cpp" dest="${temp}">
+            <fileset dir="${temp}" includes="m8.js" />
+            <arg line="-P" />
+            <srcfile/>
+            <targetfile/>
+            <mapper type="glob" from="m8.js" to="compiled.js" />
+        </apply>
+        
+        <!--<apply executable="cpp" dest="${temp}">
+            <fileset dir="${temp}" includes="m8.js" />
+            <arg value="-P" />
+            <arg value="-DDOCUMENTATION" />
+            <srcfile/>
+            <targetfile/>
+            <mapper type="glob" from="m8.js" to="doc.js" />
+        </apply> -->
+        
+        <java jar="yuicompressor-2.4.2.jar" fork="true" dir=".">
+            <arg value="--type" />
+            <arg value="js" />
+            <arg value="-o" />
+            <arg value="${temp}/compiled_min.js" />
+            <arg value="${temp}/compiled.js" />
+        </java>
+        
+        <concat destfile="${temp}/m8.js">
+            <filelist dir="${temp}" files="header.js compiled.js" />
+        </concat>
+        <concat destfile="${temp}/m8_min.js">
+            <filelist dir="${temp}" files="header.js compiled_min.js" />
+        </concat>
+        
+        <copy tofile="${build}/m8.js" file="${temp}/m8.js" />
+        <copy tofile="${build}/m8_min.js" file="${temp}/m8_min.js" />
+        <!--<copy tofile="${build}/doc.js" file="${temp}/doc.js" />-->
+        
+    </target>
+    
+    <target name="dist" depends="matrix">
+        
+    </target>    
+
+</project>
