@@ -12,31 +12,36 @@ Class = function( obj){
     var klass = function(){
         return klass.create.apply( klass, arguments);
     }, props, i;
-    
+      
     if( obj.parent){
-        props = Object.keys( obj.parent); //getOwnPropertyNames
+        props = Object.getOwnPropertyNames( obj.parent);
+        props = props.filter(function(name){
+            return !(name in klass && !Object.getOwnPropertyDescriptor( klass, name).configurable);
+        }); // we cannot set read only props.
+        
         for(i=0; i< props.length; ++i){
             klass = Object.defineProperty( klass, props[i], Object.getOwnPropertyDescriptor( obj.parent, props[i]));
         }
     }
 
-    klass = Object.defineProperties( klass, obj["static"] || {});
-    klass.prototype = Object.create( obj.parent && obj.parent.prototype || {}, obj.instance || {});
-
+    klass = Object.defineProperties( klass, obj["static"]);
+    klass.prototype = Object.create( (obj.parent && obj.parent.prototype || {}), obj.instance);
     if( !klass.create){
         klass.create =  function(){ return Object.create( this.prototype);};
     }
     if( !klass.is ){
         klass.is = function( obj){ return this.prototype.isPrototypeOf( obj);};
     }
-  
     return klass;
 };
 
 Class = Class({
     "static": { 
         create: {
-            value: Class
+            value: Class,
+            enumerable: false,
+            configurable: true,
+            writable: true
         }
     }
 });

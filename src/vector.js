@@ -8,12 +8,8 @@ var Vector = Class.create({
                 return this.wrap( arguments.length > 1 || typeof arr === "number" ? this.rectangle( arr, 1, initial) : arr);
             }, 
             enumerable: false,
-            DOC({
-                args: ["arr ( Array | Number): an Array to be wrapped by Vector XOR the number of rows for a new Vector","b (Number), optional: an intial value for the new Vector"],
-                returntype: "Vector",
-                desc: "Passes through to Vector.wrap if the first argument is an Array. Else passes through to Vector.rectangle.",
-                example: "Vector( 3, 1)"
-            })
+            configurable: true,
+            writable: true
         }
     },
     "instance":{
@@ -21,18 +17,15 @@ var Vector = Class.create({
                 return Vector.wrap( MatrixBase.prototype.scale.call( this, lambda));
             },
             enumerable: false,
-            DOC({
-                args: ["lambda ( Number): the factor to scale this vector by."],
-                returntype: "Vector",
-                desc: "Scales a Vector by a factor called lambda.",
-                example: "Vector([[3,9]]).scale(1/3)"
-            })
+            configurable: true,
+            writable: true
         },
         "transpose":{ value: function(){
                 return Vector.wrap( MatrixBase.prototype.transpose.call(this));
             },
             enumerable: false,
-            
+            configurable: true,
+            writable: true
         },
         "add":{ value: function( other){
                 if( this.length !== other.length){
@@ -41,17 +34,15 @@ var Vector = Class.create({
                 return Vector.wrap( MatrixBase.prototype.add.call(this,other));
             },
             enumerable: false,
-            DOC({
-                args: ["other ( Array | MatrixBase | Vector): the Vector to add!"],
-                returntype: "Vector",
-                desc: "Adds an other vector to the this vector.",
-                example: "Vector([[1,2]]).add([[2,1]])"
-            })
+            configurable: true,
+            writable: true
         },
         "mult":{ value: function( other){
                 return MatrixBase.wrap( MatrixBase.prototype.mult.call(this,other));
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         "magnitude":{ value:function(){
                 // returns the "length" of this vector
@@ -61,7 +52,9 @@ var Vector = Class.create({
                 }
                 return Math.pow( sum, 1/2);
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         "dot":{ value: function( other){
                 var sum=0, i=this.length;
@@ -73,7 +66,9 @@ var Vector = Class.create({
                 }
                 return sum;
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         }
     }
 });

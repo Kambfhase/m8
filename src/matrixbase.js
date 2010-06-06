@@ -8,7 +8,9 @@ var klass = Class.create({
         create : { value: function( arr){
                 return this.wrap( arguments.length > 1 ? this.rectangle.apply( this, arguments): arr);
             }, 
-            enumerable: false 
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         wrap: { value: function( arr){
                 var that = Object.create( this.prototype),
@@ -18,7 +20,9 @@ var klass = Class.create({
                 }
                 return that;
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         rectangle: { value: function( m, n, initial){
                 var row, i=m, j=n, arr=[];
@@ -42,48 +46,72 @@ var klass = Class.create({
                 }
                 return arr;
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         deepArrayCopy: { value: function( arr){
-            if( Array.prototype.isPrototypeOf( arr) || arr.map){
-                return arr.map( this.deepArrayCopy, this);
-            } else {
-                return arr;
-            }
-        }},
-        sameDimensions:{value:function(){
-            // returns true if all given matrices have the same dimensions
-            var k = arguments.length - 1,
-                n = arguments[ k].length,
-                m = arguments[ k][ 0].length;
-                
-            while( k--){
-                if( n !== arguments[k].length || m !== arguments[k][0].length){
-                    return false;
+                if( Array.prototype.isPrototypeOf( arr) || arr.map){
+                    return arr.map( this.deepArrayCopy, this);
+                } else {
+                    return arr;
                 }
-            }
-            return true;
-        }},
-        precision: { value: 1e-6 },
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        sameDimensions:{value:function(){
+                // returns true if all given matrices have the same dimensions
+                var k = arguments.length - 1,
+                    n = arguments[ k].length,
+                    m = arguments[ k][ 0].length;
+                    
+                while( k--){
+                    if( n !== arguments[k].length || m !== arguments[k][0].length){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        precision: { 
+            value: 1e-6,
+            enumerable: false,
+            configurable: true,
+            writable: true 
+        }
     },
     "instance":{
         copy: { value: function(){
                 return MatrixBase.create( MatrixBase.deepArrayCopy( this));
             },
             enumerable: false,
+            configurable: true,
+            writable: true
         },
         toArray: { value: function(){
                 return this.slice();
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         toString: { value: function(){
                 return JSON.stringify( this.toArray());
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         length: {
-            value: 0
+            value: 0,
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         transpose: { value: function(){
                 var j, i=this[0].length, m= this.length,
@@ -97,7 +125,9 @@ var klass = Class.create({
                 }
                 return that;
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         "scale":{ value: function( lambda){
                 var that = [], i=this.length, j, row;
@@ -111,7 +141,9 @@ var klass = Class.create({
                 }
                 return that;
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         "add":{ value: function( other){
                 var that = [], i=this.length,j,row;
@@ -125,7 +157,9 @@ var klass = Class.create({
                 }
                 return that;
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         "mult":{ value: function(other){
             // TODO: make this faster!
@@ -147,7 +181,9 @@ var klass = Class.create({
                 }
                 return that;
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         },
         equals: { value: function( other){
                 var i= this.length, j;
@@ -167,30 +203,33 @@ var klass = Class.create({
                 }
                 return true;
             },
-            enumerable: false
+            enumerable: false,
+            configurable: true,
+            writable: true
         }
         
     }
 });
 
 klass.prototype = (function( obj){
-return Object.defineProperty( obj, 'length', { get: 
-    function(){
-        var keys = Object.keys( this),
-            i=0,
-            biggest = 0;
-        for(; i< keys.length; ++i){
-            if( ~~keys[i] > biggest){
-                biggest = ~~keys[i];
+    return Object.defineProperty( obj, 'length', {   
+        get: function(){
+            var keys = Object.keys( this),
+                i=0,
+                biggest = 0;
+            for(; i< keys.length; ++i){
+                if( ~~keys[i] > biggest){
+                    biggest = ~~keys[i];
+                }
+            }
+            return biggest+1;
+        },
+        set: function( biggest){
+            if( biggest >= this.length){
+                this[ biggest] = undefined;
             }
         }
-        return biggest+1;
-    },
-    set: function( biggest){
-        if( biggest >= this.length){
-            this[ biggest] = undefined;
-        }
-    }});
+    });
 })(klass.prototype);
 
 return klass;
