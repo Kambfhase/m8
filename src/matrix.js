@@ -63,6 +63,15 @@ staticDescriptor = {
         configurable: true,
         writable: true
     },
+    householder:{
+        value: function( arr){
+            var vec = Vector( arr).normalize(), l=vec.length;
+            return Matrix.identity(l).add( vec.mult( vec.transpose()).scale( -2));
+        },
+        enumerable: false,
+        configurable: true,
+        writable: true
+    },
     det: { 
         value: function( arr){
             // arr: a matrix like array
