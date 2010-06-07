@@ -26,23 +26,14 @@ var klass = Class.create({
         },
         rectangle: { value: function( m, n, initial){
                 var row, i=m, j=n, arr=[];
-                if( initial){
-                    // n^2 complexity
-                    while( i--){
-                        row=[];
-                        j=n;
-                        while( j--){
-                            row[j] = initial;
-                        }
-                        arr[i]=row;
+                initial = initial === undefined? 0: initial;
+                while( i--){
+                    row=[];
+                    j=n;
+                    while( j--){
+                        row[j] = initial;
                     }
-                } else {
-                    // linear complexity
-                    while( i--){
-                        row=[];
-                        row.length = n;
-                        arr[i]=row;
-                    }
+                    arr[i]=row;
                 }
                 return arr;
             },
