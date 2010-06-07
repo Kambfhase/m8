@@ -233,15 +233,20 @@ instanceDescriptor = {
             if( this.length === 1){
                 return this.copy();
             }
-            var arr = Matrix.rectangle( this.length, this[0].length),
-                i=0, j=0;
-            for(; i< this.length; ++i){
-                for(j=0; j< this[0].length; ++j){
-                    arr[i][j] = Math.pow(-1, i+j) * Matrix.det( Matrix.cut( this, i, j));
+            
+            var arr= [], n= this[0].length, i= n, j, row;
+            
+            while( i--){
+                row=[];
+                j=n;
+                while( j--){
+                    row[j] = ( (i^j) & 1 ? -1 : 1) * Matrix.det( Matrix.cut( this, j, i));
+                    // auto transpose
                 }
+                arr[i]=row;
             }
             
-            return Matrix.create(arr).transpose();
+            return Matrix.wrap(arr);
         },
         enumerable: false,
         configurable: true,
