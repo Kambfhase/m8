@@ -196,10 +196,13 @@
 
     if(!Object.getOwnPropertyDescriptor){
         Object.getOwnPropertyDescriptor = function( O, P){
-            if( hasOwnProperty.call(O,P)){
+            if( P in O){
                  return {value: O[P] };
             }
         }
+    }
+    if( !Object.getOwnPropertyNames){
+        Object.getOwnPropertyNames= Object.keys;
     }
     
 })(Object, Object.prototype.hasOwnProperty);
