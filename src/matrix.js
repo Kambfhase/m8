@@ -46,6 +46,47 @@ staticDescriptor = {
         configurable: true,
         writable: true
     },
+    isTriangular:{
+        value: function( arr){            
+            // returns 1 if the given array is an upper triagonal matrix.
+            // returns -1 if arr is a lower triagonal matrix.
+            // returns 0 otherwise;
+            // returns 2 for diagonal matrices.
+            var m=arr.length, n= arr[0].length,
+                j,i,flag,row;
+            
+            i=m;
+            while( i--){
+                // iterate over the rows
+                j=n;
+                row = arr[i];
+                while( j--){
+                    // iterate over the coloumns
+                    if( i=== j || !row[j]){
+                        // skip zero and diagonal elements.
+                        continue; 
+                    }
+                    if( !flag){
+                        flag = ( i > j ? -1 : 1 ); 
+                        // set the flag the first time
+                        continue;
+                    }
+                    if( flag === ( i > j ? -1 : 1 )){
+                        // check if the current elements fits the pattern
+                        continue;
+                    }
+                    return 0;
+                }
+            }
+            // if flag ist still undefined at this point, we can 
+            // conclude, that the matrix only contains zeros or
+            // diagonal elements.
+            return flag || 2;
+        },
+        enumerable: false,
+        configurable: true,
+        writable: true
+    },
     identity: { 
         value: function( n){
             // returns the identity Matrix with the dimension n
@@ -74,8 +115,8 @@ staticDescriptor = {
     },
     det: { 
         value: function( arr){
-            // arr: a matrix like array
-            // returns the determinant of the given matrix
+            // arr: a square-matrix-like array
+            // returns the determinant of the given matrix using Laplace expansion along the first row
             var ret= 0,
                 m=arr.length, n= arr[0].length,
                 i=n, firstrow;
