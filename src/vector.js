@@ -81,6 +81,14 @@ var Vector = Class.create({
             enumerable: false,
             configurable: true,
             writable: true
+        },
+        normalize:{
+            value:function(){
+                return this.scale( 1/this.magnitude());
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
         }
     }
 });
