@@ -116,7 +116,7 @@ staticDescriptor = {
     det: { 
         value: function( arr){
             // arr: a square-matrix-like array
-            // returns the determinant of the given matrix using Laplace expansion along the first row
+            // returns the determinant of the given matrix
             var ret= 0,
                 m=arr.length, n= arr[0].length,
                 i=n, firstrow;
@@ -128,14 +128,26 @@ staticDescriptor = {
                 // reduce recursion for 2x2 matrices
                 return arr[0][0] * arr[1][1] - arr[0][1] * arr[1][0];
             }
-            firstrow = arr[0];
-            while( i--){
-                if( firstrow[i]){
-                    // skip 0 elements since 0*x=0
-                    ret += firstrow[i] * ( i & 1 ? -1 : 1) * Matrix.det( Matrix.cut( arr, 0, i));
+            if( !!Matrix.isTriangular( arr)){
+                // if arr is a triangular matrix, the determinant is
+                // just the product of the elements along the main diagonal
+                ret= 1;
+                while( i--){
+                    ret *= arr[i][i];
                 }
+                return ret;
+            } else {
+                // else we do Laplace expansion along the first row
+                // which is sloooooooooooooooooow!
+                firstrow = arr[0];
+                while( i--){
+                    if( firstrow[i]){
+                        // skip 0 elements since 0*x=0
+                        ret += firstrow[i] * ( i & 1 ? -1 : 1) * Matrix.det( Matrix.cut( arr, 0, i));
+                    }
+                }
+                return ret;
             }
-            return ret;
         },
         enumerable: false,
         configurable: true,
