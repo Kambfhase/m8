@@ -56,7 +56,8 @@ var Vector = Class.create({
             configurable: true,
             writable: true
         },
-        "magnitude":{ value:function(){
+        "magnitude":{ 
+            value:function(){
                 // returns the "length" of this vector
                 var sum=0, i=this.length;
                 while( i--){
@@ -85,6 +86,22 @@ var Vector = Class.create({
         normalize:{
             value:function(){
                 return this.scale( 1/this.magnitude());
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        "coords":{
+            value: function(){
+                // calculates the coordinate vector of this.
+                // For vectical vectors that will just be a copy.
+                // For horizontal vectors we will transpose them.
+                // Might take a base param in a future version
+                if( this.length < this [0].length){
+                    return this.transpose();
+                } else {
+                    return this.copy();
+                }
             },
             enumerable: false,
             configurable: true,
