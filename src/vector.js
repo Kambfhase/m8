@@ -66,10 +66,12 @@ var Vector = Class.create({
         },
         "magnitude":{ 
             value:function(){
-                // returns the "length" of this vector
-                var sum=0, i=this.length;
+                // returns the "length" of this vector aka euclidian norm
+                var that= this.coords(),
+                    sum= 0, i= that.length;
+                
                 while( i--){
-                    sum += Math.pow( this[i], 2);
+                    sum += Math.pow( that[i][0], 2); // works without the [1], too. but this is clearer
                 }
                 return Math.pow( sum, 1/2);
             },
