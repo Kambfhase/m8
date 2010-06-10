@@ -25,6 +25,14 @@ var Vector = Class.create({
         }
     },
     "instance":{
+        "copy":{
+            value: function(){
+                return Vector.wrap( MatrixBase.prototype.copy.call(this));
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
         "scale": { value: function( lambda){
                 return Vector.wrap( MatrixBase.prototype.scale.call( this, lambda));
             },
