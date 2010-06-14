@@ -5,12 +5,33 @@
 
 </head>
 <body>
+Please open up Firebug!<br/>
+
 <script>
 
 var w = Worker("framework.js");
     w.onmessage = function(m){ console.log(m.data)};
     w.onerror = function(m){ console.log};
 
+</script>
+<script type="text/javascript" charset="utf-8" src="http://yui.yahooapis.com/3.1.1/build/yui/yui-min.js">
+</script>
+<script>
+YUI({
+    gallery: 'gallery-2010.05.19-19-08'
+}).use('gallery-button','node',function(Y){
+
+
+    new Y.Button({
+        label: "run matrixAddingA against MatrixAdding tests",
+        callback: function(){
+        w.postMessage({load:"m8.js","case":"matrixAddingCase.js",candidate:"matrixAddingCandidA.js",cmd:"run"})
+
+        }
+    }).render(document.body);
+
+
+});
 </script>
 </body>
 </html>
