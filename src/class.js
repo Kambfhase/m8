@@ -26,6 +26,12 @@ Class = function( obj){
 
     klass = Object.defineProperties( klass, obj["static"]);
     klass.prototype = Object.create( (obj.parent && obj.parent.prototype || {}), obj.instance);
+    klass.prototype = Object.defineProperty( klass.prototype, "constructor", {
+        value: klass,
+        enumerable: false,
+        configurable: true,
+        writable: true
+    });
     if( !klass.create){
         klass.create =  function(){ return Object.create( this.prototype);};
     }
