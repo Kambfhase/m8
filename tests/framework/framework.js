@@ -7,6 +7,11 @@ onmessage = (function(self, post){ // gets invoked right away!
         flag = true,
         assertcount = 0,
         assert = {
+            //// HELPERS ///
+            log: function( sz){
+                post( sz);
+            },
+            //// TYPES ////
             isString: function( sz, message){
                 assertcount++;
                 if( !String.prototype.isPrototypeOf( sz) && typeof sz !== "string"){
@@ -16,10 +21,61 @@ onmessage = (function(self, post){ // gets invoked right away!
                 }
                 return true;
             },
+            //// NOT TYPES ////
+            //// VALUES ////
             isTrue: function( val, message){
                 assertcount++;
                 if( val !== true){
                     message = "isTrue() assertion failed. argument wasnt true: "+String(val)+( message? " \nmessage: "+message : "\nassert number: "+assertcount);
+                    post(message);
+                    throw message;
+                }
+                return true;
+            },
+            //// NOT VALUES ////
+            isNotUndefined: function( val, message){
+                assertcount++;
+                if( val === undefined){
+                    message = "isNotUndefined() assert failed. argument was undefined: "*String(val)+( message? " \nmessage: "+message : "\nassert number: "+assertcount);
+                    post( message);
+                    throw message;
+                }
+                return true;
+            },
+            //// COMPARISIONS ////
+            areNotEqual: function( val0, val1, message){
+                assertcount++;
+                if( val0 == val1){
+                    message = "areNotEqual() assert failed. arguments were equal, val0: "+String(val0)+" val1:"+String(val1)+( message? " \nmessage: "+message : "\nassert number: "+assertcount);
+                    post( message);
+                    throw message;
+                }
+                return true;
+            },
+            areSimilar: function( a, b, message){
+                assertcount++;
+                if( !(function(a,b){
+                    var i= a.length,j, rowA, rowB;
+                    if( i !== b.length){
+                        return false;
+                    }
+                    
+                    while( i--){
+                        rowA= a[i];
+                        rowB= b[i];
+                        j= rowA.length;
+                        if( j !== rowB.length){
+                            return false;
+                        }
+                        while( j--){
+                            if( rowA[j] !== rowB[j]){
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                })(a,b)){
+                    message = "areSimilar() assertion failed. a: "+String(a)+" b: "+String(b)+( message? " \nmessage: "+message : "\nassert number: "+assertcount);
                     post(message);
                     throw message;
                 }

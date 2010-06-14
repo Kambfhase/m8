@@ -11,8 +11,6 @@ var w = Worker("framework.js");
     w.onmessage = function(m){ console.log(m.data)};
     w.onerror = function(m){ console.log};
 
-// w.postMessage({load:"m8.js","case":"matrix-adding.js",candidate:"matrixAdding1.js",cmd:"run"})
-
 </script>
 </body>
 </html>
