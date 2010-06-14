@@ -63,7 +63,10 @@ var testCase = function( testCandidate, assert){
             count = 0, time, runss;
             do {
                 ++count;
-                assert.areSimilar( testCandidate([[1,0,3],[-1,0,0],[.5,6,18]], [[0,0,7],[7,-3,2],[2.5,6,32]]), [[1,0,10],[6,-3,2],[3,12,50]]);
+                assert.areSimilar( testCandidate([[1,0,3],[-1,0,0],[.5,6,18]], [[0,0,7],[7,-3,2],[2.5,6,32]]), 
+                [[1,0,10],[6,-3,2],[3,12,50]]);
+                assert.areSimilar( testCandidate([[1,2,3,4,5]], Matrix([[5,4,3,2,1]])), Matrix( 1, 5, 6));
+                assert.areSimilar( testCandidate([[-2, 4, 5],[ 9, -8, .5],[ 4,5,-.3]], [[3,-4,-5],[-9,9,-.5],[-4,-5,1.3]]), Matrix.identity(3));
             } while( ((time = new Date()- start)) < 100)
             
             runss = count/time*1000;
