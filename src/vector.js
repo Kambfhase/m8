@@ -25,28 +25,6 @@ var Vector = Class.create({
         }
     },
     "instance":{
-        "copy":{
-            value: function(){
-                return Vector.wrap( MatrixBase.prototype.copy.call(this));
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "scale": { value: function( lambda){
-                return Vector.wrap( MatrixBase.prototype.scale.call( this, lambda));
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "transpose":{ value: function(){
-                return Vector.wrap( MatrixBase.prototype.transpose.call(this));
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
         "add":{ value: function( other){
                 if( this.length !== other.length){
                     throw new TypeError("this.add( other): Vector dimensions mismatch!");

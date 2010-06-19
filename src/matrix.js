@@ -170,15 +170,6 @@ staticDescriptor = {
 
 instanceDescriptor = {
     // this objects contains the property descriptors for the Matrix prototype
-    copy: {
-        value: function(){
-            // returns a deep copy of this Matrix instance
-            return Matrix.wrap( Matrix.deepArrayCopy( this.toArray()));
-        },
-        enumerable: false,
-        configurable: true,
-        writable: true
-    },
     add: {
         value: function( other){
             // other is either another Matrix instance or a Matrix-like array
@@ -192,16 +183,6 @@ instanceDescriptor = {
         configurable: true,
         writable: true
     },
-    scale: {
-        value: function( lambda){
-            // lambda should be a number
-            // returns a new Matrix where each element is old_element*lambda
-            return Matrix.wrap( MatrixBase.prototype.scale.call(this, lambda));
-        },
-        enumerable: false,
-        configurable: true,
-        writable: true
-    },
     mult: {
         value: function( other){
             // other is either another Matrix instance or a Matrix-like array
@@ -210,15 +191,6 @@ instanceDescriptor = {
                 throw new TypeError("this.mult( other): The matrices dimensions mismatch! this: "+ this.toString()+ " other: "+other);
             }
             return Matrix.wrap( MatrixBase.prototype.mult.call(this,other));
-        },
-        enumerable: false,
-        configurable: true,
-        writable: true
-    },
-    transpose: {
-        value: function(){
-            // returns this Matrix flipped
-            return Matrix.wrap( MatrixBase.prototype.transpose.call(this));
         },
         enumerable: false,
         configurable: true,

@@ -77,8 +77,10 @@ var klass = Class.create({
         }
     },
     "instance":{
-        copy: { value: function(){
-                return MatrixBase.create( MatrixBase.deepArrayCopy( this));
+        copy: { 
+            value: function(){
+                //return MatrixBase.create( MatrixBase.deepArrayCopy( this));
+                return this.constructor.create( MatrixBase.deepArrayCopy( this));
             },
             enumerable: false,
             configurable: true,
@@ -114,7 +116,7 @@ var klass = Class.create({
                         that[i][j] = this[j][i];
                     }
                 }
-                return that;
+                return this.constructor.create(that);
             },
             enumerable: false,
             configurable: true,
@@ -130,7 +132,7 @@ var klass = Class.create({
                     }
                     that[i]=row;
                 }
-                return that;
+                return this.constructor.create(that);
             },
             enumerable: false,
             configurable: true,
@@ -146,7 +148,7 @@ var klass = Class.create({
                     }
                     that[i]=row;
                 }
-                return that;
+                return this.constructor.create(that);
             },
             enumerable: false,
             configurable: true,
@@ -170,7 +172,7 @@ var klass = Class.create({
                         that[i][j] = sum;
                     }
                 }
-                return that;
+                return this.constructor.create(that);
             },
             enumerable: false,
             configurable: true,
