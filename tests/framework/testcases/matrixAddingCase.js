@@ -67,12 +67,55 @@ var testCase = function( testCandidate, assert){
                 [[1,0,10],[6,-3,2],[3,12,50]]);
                 assert.areSimilar( testCandidate([[1,2,3,4,5]], Matrix([[5,4,3,2,1]])), Matrix( 1, 5, 6));
                 assert.areSimilar( testCandidate([[-2, 4, 5],[ 9, -8, .5],[ 4,5,-.3]], [[3,-4,-5],[-9,9,-.5],[-4,-5,1.3]]), Matrix.identity(3));
-            } while( ((time = new Date()- start)) < 100)
+            } while( ((time = new Date()- start)) < 1000)
             
             runss = count/time*1000;
             assert.log( runss + " runs per second.");
             
-            assert.isTrue( runss < 100000 , "too slow.");
+            assert.isTrue( runss > 10000 , "too slow.");
+        },
+        
+        profileMedium: function(){
+            var start = new Date(),
+            count = 0, time, runss;
+            
+            do {
+                ++count;
+                assert.areSimilar( testCandidate( Matrix.identity( 10), Matrix.identity( 10)), Matrix.identity( 10).scale(2));
+                assert.areSimilar( testCandidate( [
+                    [1,2,3,4,5,6,7,8,9],
+                    [1,2,3,4,5,6,7,8,9],
+                    [1,2,3,4,5,6,7,8,9],
+                    [1,2,3,4,5,6,7,8,9],
+                    [1,2,3,4,5,6,7,8,9],
+                    [1,2,3,4,5,6,7,8,9],
+                    [1,2,3,4,5,6,7,8,9],
+                    [1,2,3,4,5,6,7,8,9],
+                    [1,2,3,4,5,6,7,8,9]], [
+                    [9,8,7,6,5,4,3,2,1],
+                    [9,8,7,6,5,4,3,2,1],
+                    [9,8,7,6,5,4,3,2,1],
+                    [9,8,7,6,5,4,3,2,1],
+                    [9,8,7,6,5,4,3,2,1],
+                    [9,8,7,6,5,4,3,2,1],
+                    [9,8,7,6,5,4,3,2,1],
+                    [9,8,7,6,5,4,3,2,1],
+                    [9,8,7,6,5,4,3,2,1]]) , [
+                    [10,10,10,10,10,10,10,10,10,],
+                    [10,10,10,10,10,10,10,10,10,],
+                    [10,10,10,10,10,10,10,10,10,],
+                    [10,10,10,10,10,10,10,10,10,],
+                    [10,10,10,10,10,10,10,10,10,],
+                    [10,10,10,10,10,10,10,10,10,],
+                    [10,10,10,10,10,10,10,10,10,],
+                    [10,10,10,10,10,10,10,10,10,],
+                    [10,10,10,10,10,10,10,10,10,]]);
+                
+            } while( ((time = new Date() - start)) < 100)
+            runss = count/time*1000;
+            assert.log( runss + " runs per second.");
+            
+            assert.isTrue( runss > 1000 , "too slow.");
         }
     };
 }

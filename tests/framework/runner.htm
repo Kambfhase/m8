@@ -9,7 +9,7 @@ Please open up Firebug!<br/>
 
 <script>
 
-var w = Worker("framework.js");
+var w = new Worker("framework.js");
     w.onmessage = function(m){ console.log(m.data)};
     w.onerror = function(m){ console.log};
 
@@ -18,7 +18,7 @@ var w = Worker("framework.js");
 </script>
 <script>
 var testMap= {
-    "matrixAddingCase.js": ["matrixAddingCandidA.js"]
+    "matrixAddingCase.js": ["matrixAddingCandidA.js","matrixAddingCandidB.js","matrixAddingCandidC.js"]
 };
 
 YUI({
