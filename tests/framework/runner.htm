@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<title>Wuuza!</title>
+
+</head>
+<body>
+Please open up Firebug!<br/>
+
+<script>
+
+var w = new Worker("framework.js");
+    w.onmessage = function(m){ console.log(m.data)};
+    w.onerror = function(m){ console.log};
+
+</script>
+<script type="text/javascript" charset="utf-8" src="http://yui.yahooapis.com/3.1.1/build/yui/yui-min.js">
+</script>
+<script>
+var testMap= {
+    "matrixAddingCase.js": ["matrixAddingCandidA.js","matrixAddingCandidB.js","matrixAddingCandidC.js"]
+};
+
+YUI({
+    gallery: 'gallery-2010.05.19-19-08'
+}).use('gallery-button','node',function(Y){
+
+    var key, key2;
+    for( key in testMap){
+        if( !testMap.hasOwnProperty( key))
+            continue;
+        key2 = testMap[key].length;
+        while( key2--){
+            new Y.Button({
+                label: "run "+testMap[key][key2]+" against "+key,
+                callback: (function( key, key2){
+                    return function(){
+                        w.postMessage({ 
+                            load: "m8.js",
+                            "case": key,
+                            candidate: testMap[key][key2],
+                            cmd: "run"
+                        });
+                    };
+                })(key, key2)
+
+            }).render( document.body);
+        }
+    }
+
+    //new Y.Button({
+    //    label: "run matrixAddingA against MatrixAdding tests",
+    //    callback: function(){
+    //    w.postMessage({load:"m8.js","case":"matrixAddingCase.js",candidate:"matrixAddingCandidA.js",cmd:"run"})
+
+    //    }
+    //}).render(document.body);
+
+
+});
+</script>
+</body>
+</html>

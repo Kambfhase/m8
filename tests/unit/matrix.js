@@ -49,6 +49,7 @@ YUI({
             
             for( var i=0; i< 5; ++i){
                 Y.Assert.isTrue( Matrix.is( creates[i]));
+                Y.Assert.isTrue( creates[i] instanceof Matrix);
                 Y.Assert.isTrue( similar( creates[i], bases[i]));
             }
             
@@ -64,12 +65,16 @@ YUI({
                 Y.Assert.isTrue( Matrix.identity(1).equals([[ 1-1e-7 ]]));
                 Y.Assert.isFalse( Matrix.identity(1).equals([[ 1-1e-5 ]]));
             }
+            Y.Assert.isTrue( Matrix([[1,2,3],[4,5,6],[7,8,9]]).equals( [[1,2,3],[4,5,6],[7,8,9]]));
+            Y.Assert.isFalse( Matrix(1,2,3).equals([[1]]));
+            Y.Assert.isTrue( Matrix.identity(1).equals([[1]]));
+            Y.Assert.isFalse( Matrix([[1,2,3,4]]).equals([[1,2,3]]));
         },
         
         testCopying: function(){
             Y.Assert.isFunction( Matrix.deepArrayCopy);
             Y.Assert.isFunction( Matrix.prototype.copy);
-            var arr = [1,2,3,5,6,7,8,[9],0];
+            var arr = [1,2,3,5,6,7,8,[9],0], b;
             
             Y.Assert.isArray( Matrix.deepArrayCopy( arr));
             Y.Assert.areNotSame( arr, Matrix.deepArrayCopy(arr));
@@ -79,6 +84,9 @@ YUI({
             Y.Assert.isTrue( similar( huge, Matrix( huge)));
             Y.Assert.isTrue( similar( huge, Matrix( huge).copy()));
             Y.Assert.isTrue( Matrix( huge).copy().equals( huge));
+            b=Matrix(9,9,9);
+            Y.Assert.areNotSame( b, b.copy());
+            Y.Assert.isTrue( similar( b, b.copy()));
         },
         
         testRectangle: function(){
@@ -145,6 +153,7 @@ YUI({
             Y.Assert.isTrue( Matrix([[1,2],[3,4]]).transpose().equals([[1,3],[2,4]]));
             Y.Assert.isTrue( Matrix(1,1,1).transpose().equals(Matrix(1,1,1)));
             Y.Assert.isTrue( Matrix(huge).transpose().transpose().equals( huge));
+            Y.Assert.isTrue( Matrix(huge).transpose().equals( huge.transpose()));
         }
     });
     
@@ -231,18 +240,23 @@ YUI({
             Y.Assert.isNumber( Matrix(1,1,1).det());
             Y.Assert.areEqual( Matrix(1,1,1).det(), 1);
             Y.Assert.areEqual( Matrix.identity(7).det(), 1);
-            Y.Assert.areEqual( Matrix(5,8,7).det(), 0);
-            Y.Assert.areEqual( Matrix(7,7,0).det(), 0);
+            //Y.Assert.areEqual( Matrix(5,8,7).det(), 0); // this will probably throw an error in a future version.
+            Y.Assert.areEqual( Matrix(7,7,0).det(), 0, "gives NaN ?");
             Y.Assert.areEqual( Matrix.det(huge), Matrix(huge).det());
             Y.Assert.areEqual( Matrix.det(huge), Matrix(huge).transpose().det());
+            Y.Assert.areEqual( Matrix([[2,9,9,4],
+                                       [2,-3,12,8],
+                                       [4,8,3,-5],
+                                       [1,2,6,4]]).det(), 147);
+            Y.Assert.areEqual( Matrix([[1,2,3],[4,5,6],[7,8,9]]),0);
         },
         
         testAdjugate: function(){
             Y.Assert.isFunction( Matrix.prototype.adjugate);
             
-            Y.Assert.isTrue( Matrix.is( Matrix.identity(3).adjugate()));
+            Y.Assert.isTrue( Matrix.is( Matrix.identity(3).adjugate()),"first");
             Y.Assert.areEqual( Matrix(2,2,2).adjugate().mult(Matrix(2,2,2))[0][0], Matrix(2,2,2).det());
-            Y.Assert.isTrue( Matrix(huge).adjugate().mult( huge).scale( 1/Matrix(huge).det()).equals( Matrix.identity(9))); 
+            Y.Assert.isTrue( Matrix(huge).adjugate().mult( huge).scale( 1/Matrix(huge).det()).equals( Matrix.identity(9)),"second"); 
         },
         
         testAdjugateError: function(){
@@ -254,8 +268,10 @@ YUI({
             
             Y.Assert.isTrue( Matrix.is( Matrix.identity(3).invert()));
             Y.Assert.isTrue( Matrix.identity(3).invert().equals( Matrix.identity(3)));
-            Y.Assert.isTrue( Matrix(2,2,2).mult( Matrix(2,2,2).invert()).equals( Matrix.identity(2)));
-            Y.Assert.isTrue( Matrix(2,2,2).invert().mult( Matrix(2,2,2)).equals( Matrix.identity(2)));
+            //Y.Assert.isTrue( Matrix(2,2,2).mult( Matrix(2,2,2).invert()).equals( Matrix.identity(2)));
+            //Y.Assert.isTrue( Matrix(2,2,2).invert().mult( Matrix(2,2,2)).equals( Matrix.identity(2)));
+            // Matrix(2,2,2) is not invertable!
+            
             
         },
         
