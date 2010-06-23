@@ -87,7 +87,7 @@ YUI({
     new Y.Button({
         label: "run Vector tests",
         callback: function(){
-            Y.FireUnit.attach( Y.Test.Runner);
+            //Y.FireUnit.attach( Y.Test.Runner);
 
             Y.Test.Runner.add(basics);
             Y.Test.Runner.add(maths);
