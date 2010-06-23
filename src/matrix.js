@@ -3,7 +3,7 @@
 #include "class.js"
 #include "matrixbase.js"
 
-(function(namespace){
+var Matrix= (function(namespace){
 "use strict";
 
 var Matrix,
@@ -293,7 +293,7 @@ Matrix = Class.create({
     parent: MatrixBase
 });
 
-namespace.Matrix = Matrix;
+return Matrix;
 
 })(window);
 

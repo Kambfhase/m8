@@ -2,7 +2,8 @@
 #define CLASS_JS
 #include "vice-versa-mod.js"
 
-(function(){
+
+var Class = (function(){
 "use strict";
 
 var Object = this.Object,
@@ -53,7 +54,8 @@ Class = Class({
 });
 
 #ifndef DOCUMENTATION
-window.Class = Class;
+
+return Class;
 #else
 var _Class = Class;
 
