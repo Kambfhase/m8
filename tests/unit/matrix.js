@@ -248,7 +248,7 @@ YUI({
                                        [2,-3,12,8],
                                        [4,8,3,-5],
                                        [1,2,6,4]]).det(), 147);
-            Y.Assert.areEqual( Matrix([[1,2,3],[4,5,6],[7,8,9]]),0);
+            Y.Assert.areEqual( Matrix([[1,2,3],[4,5,6],[7,8,9]]).det(),0);
         },
         
         testAdjugate: function(){
