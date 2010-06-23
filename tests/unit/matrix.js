@@ -267,7 +267,7 @@ YUI({
     new Y.Button({
         label: "run Matrix tests",
         callback: function(){
-            Y.FireUnit.attach( Y.Test.Runner);
+            //Y.FireUnit.attach( Y.Test.Runner);
 
             Y.Test.Runner.add(m0);
             Y.Test.Runner.add(m1);
