@@ -153,7 +153,7 @@ YUI({
             Y.Assert.isTrue( Matrix([[1,2],[3,4]]).transpose().equals([[1,3],[2,4]]));
             Y.Assert.isTrue( Matrix(1,1,1).transpose().equals(Matrix(1,1,1)));
             Y.Assert.isTrue( Matrix(huge).transpose().transpose().equals( huge));
-            Y.Assert.isTrue( Matrix(huge).transpose().equals( huge.transpose()));
+            Y.Assert.isTrue( Matrix(huge).transpose().equals(Matrix(huge).transpose()));
         }
     });
     
@@ -186,6 +186,9 @@ YUI({
             Y.Assert.isTrue( Matrix( huge).add( huge).scale( .5).equals( huge));
             Y.Assert.isTrue( Matrix( huge).scale( -1).add( huge).equals( Matrix(9,9)));
             Y.Assert.isTrue( Matrix( huge).add( Matrix.identity(9)).equals( Matrix.identity(9).add( huge)));
+            Y.Assert.isTrue( Matrix([[1,2,3,4]]).add([[4,3,2,1]]).equals([[5,5,5,5]]));
+            Y.Assert.isTrue( Matrix([[1,2,3,4,5],[6,7,8,9,0]]).add([[3,0,0,0,0],[6,1,1,1,1]]).equals([[4,2,3,4,5],[12,8,9,10,1]]));
+            
         },
         
         testAddError0: function(){
@@ -206,12 +209,12 @@ YUI({
         testMult: function(){
             Y.Assert.isFunction( Matrix.prototype.mult);
             
-            Y.Assert.isTrue( Matrix.is(Matrix([[1]]).mult([[1]])),"assert0");
-            Y.Assert.isTrue( Matrix.identity(3).mult( Matrix.identity(3)).equals( Matrix.identity(3)),"assert1");
-            Y.Assert.isTrue( Matrix([[1,2],[3,4]]).mult([[5,6],[7,8]]).equals([[19,22],[43,50]]),"assert2");
-            Y.Assert.isTrue( Matrix([[5,6],[7,8]]).mult([[1,2],[3,4]]).equals([[23,34],[31,46]]),"assert3");
-            Y.Assert.isTrue( Matrix.identity(9).mult(huge).equals(huge),"assert4");
-            Y.Assert.isTrue( Matrix([[1,2],[3,4],[0,-1]]).mult([[5,6],[7,8]]).equals([[19,22],[43,50],[-7,-8]]),"assert5");
+            Y.Assert.isTrue( Matrix.is(Matrix([[1]]).mult([[1]])));
+            Y.Assert.isTrue( Matrix.identity(3).mult( Matrix.identity(3)).equals( Matrix.identity(3)));
+            Y.Assert.isTrue( Matrix([[1,2],[3,4]]).mult([[5,6],[7,8]]).equals([[19,22],[43,50]]));
+            Y.Assert.isTrue( Matrix([[5,6],[7,8]]).mult([[1,2],[3,4]]).equals([[23,34],[31,46]]));
+            Y.Assert.isTrue( Matrix.identity(9).mult(huge).equals(huge));
+            Y.Assert.isTrue( Matrix([[1,2],[3,4],[0,-1]]).mult([[5,6],[7,8]]).equals([[19,22],[43,50],[-7,-8]]));
         },
         
         testMultError0: function(){
@@ -271,7 +274,7 @@ YUI({
             //Y.Assert.isTrue( Matrix(2,2,2).mult( Matrix(2,2,2).invert()).equals( Matrix.identity(2)));
             //Y.Assert.isTrue( Matrix(2,2,2).invert().mult( Matrix(2,2,2)).equals( Matrix.identity(2)));
             // Matrix(2,2,2) is not invertable!
-            
+            Y.Assert.isTrue( similar( Matrix([[1,2,0],[2,3,0],[3,4,1]]).invert(), [[-3,2,0],[2,-1,0],[1,-2,1]]));
             
         },
         
