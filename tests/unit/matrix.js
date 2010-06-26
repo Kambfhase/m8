@@ -1,7 +1,6 @@
 YUI({
     gallery: 'gallery-2010.05.19-19-08'
-}).use('gallery-button','test','node','test-fireunit',function(Y){
-
+}).use('gallery-button','test','node','test-fireunit','Matrix-Assertions',function(Y){
 
 
     var huge = [
@@ -14,23 +13,6 @@ YUI({
 [0,0,0,0,0,0,7,8,9],
 [0,0,0,0,0,0,0,8,9],
 [0,0,0,0,0,0,0,0,9]];
-
-
-    var similar = function( a, b){
-        // returns true if a and b are similar matrix-like arrays
-        if( !a || !b ){
-            return false;
-        }
-        var i=0, j=0;
-        for(; i< a.length; ++i){
-            for(j=0; j< a[i].length; ++j){
-                if( a[i][j] !== b[i][j]){
-                    return false;
-                }
-            }
-        }
-        return true;
-    };
 
     var m0 = new Y.Test.Case({
         name: "Matrix: Basics",
@@ -49,8 +31,8 @@ YUI({
             
             for( var i=0; i< 5; ++i){
                 Y.Assert.isTrue( Matrix.is( creates[i]));
-                Y.Assert.isTrue( creates[i] instanceof Matrix);
-                Y.Assert.isTrue( similar( creates[i], bases[i]));
+                Y.Assert.isInstanceOf( Matrix, creates[i]);
+                Y.ArrayAssert.itemsAreEqual2D( bases[i], creates[i]);
             }
             
         },
@@ -74,27 +56,27 @@ YUI({
         testCopying: function(){
             Y.Assert.isFunction( Matrix.deepArrayCopy);
             Y.Assert.isFunction( Matrix.prototype.copy);
-            var arr = [1,2,3,5,6,7,8,[9],0], b;
+            var arr = [1,2,3,5,6,7,8,9,0], b;
             
             Y.Assert.isArray( Matrix.deepArrayCopy( arr));
             Y.Assert.areNotSame( arr, Matrix.deepArrayCopy(arr));
-            Y.Assert.isTrue( similar( arr, Matrix.deepArrayCopy(arr)));
+            Y.ArrayAssert.itemsAreEqual( arr, Matrix.deepArrayCopy(arr));
             
             Y.Assert.areNotSame( huge, Matrix( huge));
-            Y.Assert.isTrue( similar( huge, Matrix( huge)));
-            Y.Assert.isTrue( similar( huge, Matrix( huge).copy()));
+            Y.ArrayAssert.itemsAreEqual2D( huge, Matrix( huge));
+            Y.ArrayAssert.itemsAreEqual2D( huge, Matrix( huge).copy());
             Y.Assert.isTrue( Matrix( huge).copy().equals( huge));
             b=Matrix(9,9,9);
             Y.Assert.areNotSame( b, b.copy());
-            Y.Assert.isTrue( similar( b, b.copy()));
+            Y.ArrayAssert.itemsAreEqual2D( b, b.copy());
         },
         
         testRectangle: function(){
             Y.Assert.isFunction( Matrix.rectangle);
         
-            Y.Assert.isTrue( similar( Matrix.rectangle( 1,1,1), [[1]]));
-            Y.Assert.isTrue( similar( Matrix.rectangle( 2,2,2), [[2,2],[2,2]]));
-            Y.Assert.isTrue( similar( Matrix.rectangle( 3,3), [[0,0,0],[0,0,0],[0,0,0]]),"This shouldn't fail.");
+            Y.ArrayAssert.itemsAreEqual2D( [[1]], Matrix.rectangle( 1,1,1));
+            Y.ArrayAssert.itemsAreEqual2D( [[2,2],[2,2]],  Matrix.rectangle( 2,2,2));
+            Y.ArrayAssert.itemsAreEqual2D( [[0,0,0],[0,0,0],[0,0,0]], Matrix.rectangle( 3,3),"This shouldn't fail.");
         },
         
         testSquare: function(){
@@ -110,9 +92,9 @@ YUI({
         testCut: function(){
             Y.Assert.isFunction( Matrix.cut);
             
-            Y.Assert.isTrue( similar( Matrix.cut( Matrix(2,2,2), 0,0), [[2]]));
-            Y.Assert.isTrue( similar( Matrix.cut( Matrix.identity(6), 0, 0), Matrix.identity(5)));
-            Y.Assert.isTrue( similar( Matrix.cut( Matrix.identity(3), 0, 2), [[0,1],[0,0]]));
+            Y.ArrayAssert.itemsAreEqual2D( [[2]], Matrix.cut( Matrix(2,2,2), 0,0));
+            Y.ArrayAssert.itemsAreEqual2D( Matrix.identity(5), Matrix.cut( Matrix.identity(6), 0, 0));
+            Y.ArrayAssert.itemsAreEqual2D( [[0,1],[0,0]], Matrix.cut( Matrix.identity(3), 0, 2));
         }
     });
 
@@ -123,7 +105,7 @@ YUI({
             Y.Assert.isFunction( Matrix.prototype.toArray);
             
             Y.Assert.isArray( Matrix( huge).toArray());
-            Y.Assert.isTrue( similar( Matrix(huge).toArray(), huge));
+            Y.ArrayAssert.itemsAreEqual2D( huge, Matrix(huge).toArray());
             Y.Assert.areEqual( JSON.stringify(Matrix( huge).toArray()), JSON.stringify(huge));
         },
         
@@ -141,8 +123,8 @@ YUI({
             
             Y.Assert.isArray( Matrix.identity(3).row(0));
             Y.Assert.isArray( Matrix.identity(3).col(0));
-            Y.Assert.isTrue( similar( Matrix( huge).row(1), [0,2,3,4,5,6,7,8,9]));
-            Y.Assert.isTrue( similar( Matrix( huge).col(8), [9,9,9,9,9,9,9,9,9]));
+            Y.ArrayAssert.itemsAreEqual([0,2,3,4,5,6,7,8,9], Matrix( huge).row(1));
+            Y.ArrayAssert.itemsAreEqual([9,9,9,9,9,9,9,9,9], Matrix( huge).col(8));
         },
         
         testTranspose: function(){
@@ -166,6 +148,9 @@ YUI({
                 testAddError1: true,
                 testMultError0: true,
                 testMultError1: true
+            },
+            ignore: {
+                testAddMultiple: true
             }
         },
         
@@ -268,14 +253,13 @@ YUI({
         
         testInvert: function(){
             Y.Assert.isFunction( Matrix.prototype.invert);
-            
             Y.Assert.isTrue( Matrix.is( Matrix.identity(3).invert()));
             Y.Assert.isTrue( Matrix.identity(3).invert().equals( Matrix.identity(3)));
             //Y.Assert.isTrue( Matrix(2,2,2).mult( Matrix(2,2,2).invert()).equals( Matrix.identity(2)));
             //Y.Assert.isTrue( Matrix(2,2,2).invert().mult( Matrix(2,2,2)).equals( Matrix.identity(2)));
             // Matrix(2,2,2) is not invertable!
-            Y.Assert.isTrue( similar( Matrix([[1,2,0],[2,3,0],[3,4,1]]).invert(), [[-3,2,0],[2,-1,0],[1,-2,1]]));
-            
+            Y.ArrayAssert.itemsAreEqual2D( [[-3,2,0],[2,-1,0],[1,-2,1]], Matrix([[1,2,0],[2,3,0],[3,4,1]]).invert() );
+            Y.ArrayAssert.itemsAreEqual2D( Matrix([[-2,-5,4],[5,5,-5],[1,5,-2]]).scale(.2), Matrix([[3,2,1],[1,0,2],[4,1,3]]).invert());
         },
         
         testInvertError: function(){
