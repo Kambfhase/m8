@@ -1,4 +1,4 @@
-#ifndef MATRXBASE_JS
+#ifndef MATRIXBASE_JS
 #define MATRIXBASE_JS
 
 var MatrixBase = (function(){
