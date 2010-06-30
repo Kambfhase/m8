@@ -207,15 +207,8 @@ var klass = Class.create({
 klass.prototype = (function( obj){
     return Object.defineProperty( obj, 'length', {   
         get: function(){
-            var keys = Object.keys( this),
-                i=0,
-                biggest = 0;
-            for(; i< keys.length; ++i){
-                if( ~~keys[i] > biggest){
-                    biggest = ~~keys[i];
-                }
-            }
-            return biggest+1;
+            // this works because every other property is not enumerable
+            return Object.keys(this).length;
         },
         set: function( biggest){
             if( biggest >= this.length){
