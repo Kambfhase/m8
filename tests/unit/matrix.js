@@ -75,7 +75,7 @@ YUI({
             Y.Assert.isFunction( Matrix.rectangle);
         
             Y.ArrayAssert.itemsAreEqual2D( [[1]], Matrix.rectangle( 1,1,1));
-            Y.ArrayAssert.itemsAreEqual2D( [[2,2],[2,2]],  Matrix.rectangle( 2,2,2));
+            Y.ArrayAssert.itemsAreEqual2D( [[2,2],[2,2]], Matrix.rectangle( 2,2,2));
             Y.ArrayAssert.itemsAreEqual2D( [[0,0,0],[0,0,0],[0,0,0]], Matrix.rectangle( 3,3),"This shouldn't fail.");
         },
         
@@ -106,7 +106,7 @@ YUI({
             
             Y.Assert.isArray( Matrix( huge).toArray());
             Y.ArrayAssert.itemsAreEqual2D( huge, Matrix(huge).toArray());
-            Y.Assert.areEqual( JSON.stringify(Matrix( huge).toArray()), JSON.stringify(huge));
+            Y.Assert.areEqual( JSON.stringify(huge), JSON.stringify(Matrix( huge).toArray()));
         },
         
         testToString: function(){
@@ -114,7 +114,7 @@ YUI({
             
             Y.Assert.isString( Matrix(3,3,3).toString());
             Y.Assert.isString( Matrix( huge).toString());
-            Y.Assert.areEqual( Matrix( huge).toString(), JSON.stringify( huge));
+            Y.Assert.areEqual( JSON.stringify( huge), Matrix( huge).toString());
         },
         
         testRowCol: function(){
@@ -226,25 +226,25 @@ YUI({
             Y.Assert.isFunction( Matrix.prototype.det);
             
             Y.Assert.isNumber( Matrix(1,1,1).det());
-            Y.Assert.areEqual( Matrix(1,1,1).det(), 1);
-            Y.Assert.areEqual( Matrix.identity(7).det(), 1);
+            Y.Assert.areEqual( 1, Matrix(1,1,1).det());
+            Y.Assert.areEqual( 1, Matrix.identity(7).det());
             //Y.Assert.areEqual( Matrix(5,8,7).det(), 0); // this will probably throw an error in a future version.
-            Y.Assert.areEqual( Matrix(7,7,0).det(), 0, "gives NaN ?");
+            Y.Assert.areEqual( 0, Matrix(7,7,0).det(), "gives NaN ?");
             Y.Assert.areEqual( Matrix.det(huge), Matrix(huge).det());
             Y.Assert.areEqual( Matrix.det(huge), Matrix(huge).transpose().det());
-            Y.Assert.areEqual( Matrix([[2,9,9,4],
+            Y.Assert.areEqual( 147, Matrix([[2,9,9,4],
                                        [2,-3,12,8],
                                        [4,8,3,-5],
-                                       [1,2,6,4]]).det(), 147);
-            Y.Assert.areEqual( Matrix([[1,2,3],[4,5,6],[7,8,9]]).det(),0);
+                                       [1,2,6,4]]).det());
+            Y.Assert.areEqual( 0, Matrix([[1,2,3],[4,5,6],[7,8,9]]).det());
         },
         
         testAdjugate: function(){
             Y.Assert.isFunction( Matrix.prototype.adjugate);
             
             Y.Assert.isTrue( Matrix.is( Matrix.identity(3).adjugate()),"first");
-            Y.Assert.areEqual( Matrix(2,2,2).adjugate().mult(Matrix(2,2,2))[0][0], Matrix(2,2,2).det());
-            Y.Assert.isTrue( Matrix(huge).adjugate().mult( huge).scale( 1/Matrix(huge).det()).equals( Matrix.identity(9)),"second"); 
+            Y.Assert.areEqual( Matrix(2,2,2).det(), Matrix(2,2,2).adjugate().mult(Matrix(2,2,2))[0][0]);
+            Y.Assert.isTrue( Matrix(huge).adjugate().mult( huge).scale( 1/Matrix(huge).det()).equals( Matrix.identity(9)),"second");
         },
         
         testAdjugateError: function(){
@@ -281,3 +281,4 @@ YUI({
     }}).render(document.body);
 
 });
+
