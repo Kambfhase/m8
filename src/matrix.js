@@ -284,7 +284,7 @@ instanceDescriptor = {
         enumerable: false,
         configurable: true,
         writable: true
-    },
+    }
 };
 
 Matrix = Class.create({
