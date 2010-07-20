@@ -20,6 +20,7 @@ if( ! NAMESPACE){
 #include "binom.js"
 #include "fibonacci.js"
 #include "factorial.js"
+#include "complex.js"
 
 #if NAMESPACE
 
