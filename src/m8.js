@@ -19,6 +19,7 @@ if( ! NAMESPACE){
 #include "vector.js"
 #include "binom.js"
 #include "fibonacci.js"
+#include "factorial.js"
 
 #if NAMESPACE
 
