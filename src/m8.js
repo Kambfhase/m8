@@ -17,6 +17,7 @@ if( ! NAMESPACE){
 
 #include "matrix.js"
 #include "vector.js"
+#include "binom.js"
 
 #if NAMESPACE
 
