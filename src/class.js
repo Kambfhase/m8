@@ -3,30 +3,37 @@
 #include "vice-versa-mod.js"
 
 
-var Class = (function(){
+#define PARENT "parent"
+#define STATIC  "static"
+#define INSTANCE "instance"
+
+var Class = (function( Object){
 "use strict";
 
-var Object = this.Object,
-    Class;
+var Class,
+    skip = Object.getOwnPropertyNames(function(){});
 
 Class = function( obj){
     var klass = function(){
-        return klass.create.apply( klass, arguments);
-    }, props, i;
+            return klass.create.apply( klass, arguments);
+        }, props, i, prop,
+        par = obj[ PARENT ],
+        stat = obj[ STATIC],
+        inst = obj[INSTANCE];
       
-    if( obj.parent){
-        props = Object.getOwnPropertyNames( obj.parent);
-        props = props.filter(function(name){
-            return !(name in klass && !Object.getOwnPropertyDescriptor( klass, name).configurable);
-        }); // we cannot set read only props.
-        
-        for(i=0; i< props.length; ++i){
-            klass = Object.defineProperty( klass, props[i], Object.getOwnPropertyDescriptor( obj.parent, props[i]));
+    if( par){
+        props = Object.getOwnPropertyNames( par);
+        i= props.length;
+        while( i--){
+            prop = props[ i];
+            if( skip.indexOf( prop) == -1){
+                klass = Object.defineProperty( klass, prop, Object.getOwnPropertyDescriptor( par, prop));
+            }
         }
     }
 
-    klass = Object.defineProperties( klass, obj["static"]);
-    klass.prototype = Object.create( (obj.parent && obj.parent.prototype || {}), obj.instance);
+    klass = Object.defineProperties( klass, stat);
+    klass.prototype = Object.create( (par && par.prototype || Object.prototype), inst);
     klass.prototype = Object.defineProperty( klass.prototype, "constructor", {
         value: klass,
         enumerable: false,
@@ -39,11 +46,13 @@ Class = function( obj){
     if( !klass.is ){
         klass.is = function( obj){ return this.prototype.isPrototypeOf( obj);};
     }
+    
+    
     return klass;
 };
 
 Class = Class({
-    "static": { 
+    STATIC: { 
         create: {
             value: Class,
             enumerable: false,
@@ -53,39 +62,7 @@ Class = Class({
     }
 });
 
-#ifndef DOCUMENTATION
-
 return Class;
-#else
-var _Class = Class;
 
-Class = _Class({
-    "static": {
-        create: {
-            value: function( obj){
-                var klass = function(){}, i, arr;
-                
-                
-                arr = Object.keys( obj["static"]);
-                i = arr.length;
-                while( i--){
-                    klass[ arr[i]] = obj["static"][ arr[i]].doc;
-                }
-                
-                //klass.prototype = Object.create( obj.parent.prototype);
-                klass.prototype= {};
-                arr = Object.keys( obj["instance"]);
-                i = arr.length;
-                while( i--){
-                    klass.prototype[ arr[i]] = obj["instance"][ arr[i]].doc;
-                }
-                
-                return klass;
-            }
-        }
-    }
-});
-window.Class = Class;
-#endif
-})();
+})(Object);
 #endif 
