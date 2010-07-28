@@ -1,18 +1,15 @@
 // Metafile
 
-#ifdef DOCUMENTATION
-    #define DOC( ...) doc: (__VA_ARGS__)
-#else
-    #define DOC( ...)
-#endif
-
 #include "vice-versa-mod.js"
 
 #ifdef NAMESPACE
-(function(){
-if( ! NAMESPACE){
-    this.NAMESPACE = {};
+
+(function( namespace){
+
+if( typeof namespace === "string"){
+    namespace = this[ namespace];
 }
+
 #endif
 
 #include "matrix.js"
@@ -24,7 +21,6 @@ if( ! NAMESPACE){
 
 #if NAMESPACE
 
-//NAMESPACE.
+})( NAMESPACE || this);
 
-})();
 #endif
