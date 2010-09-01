@@ -2,93 +2,183 @@
 #define VECTOR_JS
 
 var Vector = Class.create({
-    parent: MatrixBase,
+    parent: Collection,
     "static":{
-        create: { value: function( arr, initial){
-                return this.wrap( arguments.length > 1 || typeof arr === "number" ? this.rectangle( arr, 1, initial) : arr);
-            }, 
+        like: {
+            value: function( obj){
+                 if( (Array.prototype.isPrototypeOf( obj) || "length" in obj) && typeof obj[0] === "number"){
+                      return true;
+                 } else {
+                      return false;
+                 }
+            },
             enumerable: false,
             configurable: true,
             writable: true
         },
-        wrap: {
-            value: function( arr){
-                if( Array.prototype.isPrototypeOf( arr) && typeof arr[0] === "number"){
-                    return Vector.wrap([ arr]).transpose();
-                } else {
-                    return MatrixBase.wrap.call( this, arr);
+        sameDimensions: {
+            value: function( ){
+                var i = arguments.length, m= arguments[ --i].length;
+                while( i--){
+                    if( arguments[ i].length !== m){
+                        return false;
+                    }
                 }
+                return true;
             },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        standardScalarproduct: {
+            value: function( a, b){
+                if( !this.sameDimensions( a, b)){
+                    throw new TypeError("Vector-Dimensions mismatch!");
+                }
+                var ret=0, i=a.length;
+                while( i--){
+                    ret += a[ i] * b[ i];
+                }
+                return ret;
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        precision: {
+            value: 1e-6,
             enumerable: false,
             configurable: true,
             writable: true
         }
     },
     "instance":{
-        "add":{ value: function( other){
-                if( this.length !== other.length){
-                    throw new TypeError("this.add( other): Vector dimensions mismatch!");
-                }
-                return Vector.wrap( MatrixBase.prototype.add.call(this,other));
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "mult":{ value: function( other){
-                return MatrixBase.wrap( MatrixBase.prototype.mult.call(this,other));
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "magnitude":{ 
-            value:function(){
-                // returns the "length" of this vector aka euclidian norm
-                var that= this.coords(),
-                    sum= 0, i= that.length;
-                
-                while( i--){
-                    sum += Math.pow( that[i][0], 2); // works without the [1], too. but this is clearer
-                }
-                return Math.pow( sum, 1/2);
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "dot":{ value: function( other){
-                var sum=0, i=this.length;
-                if( i !== other.length){
-                    throw new TypeError("this.dot( other): Vector dimensions mismatch!");
-                }
-                while( i--){
-                    sum += this[i] * other[i];
-                }
-                return sum;
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        normalize:{
-            value:function(){
-                return this.scale( 1/this.magnitude());
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "coords":{
-            value: function(){
-                // calculates the coordinate vector of this.
-                // For vectical vectors that will just be a copy.
-                // For horizontal vectors we will transpose them.
-                // Might take a base param in a future version
-                if( this.length < this [0].length){
-                    return this.transpose();
+        sameDimensions: {
+            value: function( other){
+                if( arguments.length === 1){
+                    return this.length === other.length;
                 } else {
-                    return this.copy();
+                    return this.constructor.sameDimensions.apply( this.constructor, arguments.push( this)); // ES5 only
+                }
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        toArray: {
+            value: function(){
+                return this.slice();
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        copy: {
+            value: function(){
+                return this.constructor.create( this.slice());
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        toMatrix: {
+            value: function(){
+                var that = [], i= this.length;
+                while( i--){
+                    that[ i]= [ this[ i]];
+                }
+                return Matrix.create( that);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        magnitude: {
+            value: function(){
+                var ret=0, i=this.length;
+                while( i--){
+                    ret += this[i]*this[i];
+                }
+                return Math.pow( ret, .5);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        equals: {
+            value: function( other, precision){
+                precision = precision === undefined ? this.constructor.precision : precision;
+                if( !this.sameDimensions( other))
+                    return false;
+                var i= this.length;
+                while( i--){
+                    if( Math.abs( this[ i] - other[ i]) > precision){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        scale: {
+            value: function( lambda){
+                var that = [], i= this.length;
+                while( i--){
+                    that[ i]= this[ i]* lambda;
+                }
+                return this.constructor.create( that);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        normalize: {
+            value: function(){
+                return this.scale( 1/ this.magnitude());
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        add: {
+            value: function( other){
+                var that = [], i=this.length;
+                if( !this.sameDimensions( other))
+                    throw new TypeError("Vector-Dimensions mismatch");
+                while( i--){
+                    that[ i] = this[ i]+ other[ i];
+                }
+                return this.constructor.create( that);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        dot: {
+            value: function( other){
+                if( !this.sameDimensions( other))
+                    throw new TypeError("Vector-Dimension mismatch");
+                var ret = 0, i=this.length;
+                while( i--){
+                    ret += this[ i] * other[ i];
+                }
+                return ret;
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        mult: {
+            value: function( other){
+                var constr = this.constructor;
+                if( typeof other === "number"){
+                    return this.scale( other);
+                } else if( Matrix.is( other)){
+                    return this.toMatrix().mult( other);
+                } else if( constr.is( other) || constr.like( other)){
+                    return this.dot( other);
                 }
             },
             enumerable: false,
