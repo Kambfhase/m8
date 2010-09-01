@@ -11,7 +11,9 @@ if( typeof namespace === "string"){
 }
 
 #endif
+#include "class.js"
 
+#include "collection.js"
 #include "matrix.js"
 #include "vector.js"
 #include "binom.js"
