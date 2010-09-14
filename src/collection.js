@@ -17,7 +17,8 @@ var klass = Class({
     },
     "instance":{
          length: {
-              value: 0
+              value: 0,
+              configurable: true
          },
          toArray: {
              value: function(){
@@ -29,11 +30,11 @@ var klass = Class({
                  return this.slice().toString();
              }
          },
-         toSource: {
-             value: function(){
-                 return "Collection("+JSON.stringify( this.toArray())+")";
-             }
-         }
+         //toSource: {
+         //    value: function(){
+         //        return "Collection("+JSON.stringify( this.toArray())+")";
+         //    }
+         //}
     }
 });
 
