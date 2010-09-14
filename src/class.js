@@ -7,6 +7,8 @@
 #define STATIC  "static"
 #define INSTANCE "instance"
 
+
+
 var Class = (function( Object){
 "use strict";
 
@@ -32,7 +34,9 @@ Class = function( obj){
         }
     }
 
-    klass = Object.defineProperties( klass, stat);
+    if( stat){
+        klass = Object.defineProperties( klass, stat);
+    }
     klass.prototype = Object.create( (par && par.prototype || Object.prototype), inst);
     klass.prototype = Object.defineProperty( klass.prototype, "constructor", {
         value: klass,
