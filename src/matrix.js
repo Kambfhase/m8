@@ -264,10 +264,58 @@ instanceDescriptor = {
     },
     det: {
         value: function(){
+            //returns the determinant
             if( !Matrix.isSquare( this)){
-                return 0;
+                return null;
             }
-            return Matrix.det( this.toArray());
+            var n= this.length, ret = 1;
+            
+            if( n=== 1){
+                return this[0][0];
+            }
+            if( n=== 2){
+                return this[0][0] * this[1][1] - this[1][0] * this[0][1];
+            }
+            if( Matrix.isTriangular( this)){
+                while( n--){
+                    ret *= this[n][n];
+                }
+                return ret;
+            } else {
+                // Use Gauss elimination for computation, which is faster than Laplace expansion.
+                // This method has a small round-off error.
+                // It was hard to write, so it should be at least hard to read.
+                var i, j, k, fak, rowi, rowj, R=Matrix.deepArrayCopy( this);
+                
+                for(i=0; i<n; i++){
+                    rowi = R[i];
+                    if( !rowi[i]){
+                        for( j=i+1; j<n; j++){
+                            rowj=R[j];
+                            if( rowj[i]){
+                                for( k=i; k<n; k++){
+                                    rowi[ k] += rowj[ k];
+                                }
+                            }
+                        }
+                    }
+                    if( rowi[i]){
+                        for( j=i+1; j<n; j++){
+                            rowj= R[j];
+                            fak= rowj[i] / rowi[i];
+                            if( fak){
+                                for( k=i; k<n; k++){
+                                    rowj[k] -= rowi[k]*fak;
+                                }
+                            }
+                        }
+                        ret *= rowi[i];
+                    } else {
+                        return 0;
+                    }
+                }
+                return ret;
+            }
         },
         enumerable: false,
         configurable: true,
