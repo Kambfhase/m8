@@ -4,7 +4,7 @@
 #include "matrixbase.js"
 
 var Matrix= (function(namespace){
-"use strict";
+//"use strict";
 
 var Matrix,
     MatrixFn,
