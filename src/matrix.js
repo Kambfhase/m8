@@ -212,7 +212,7 @@ instanceDescriptor = {
                 row=[];
                 j=n;
                 while( j--){
-                    row[j] = ( (i^j) & 1 ? -1 : 1) * Matrix.det( Matrix.cut( this, j, i));
+                    row[j] = ( (i^j) & 1 ? -1 : 1) * Matrix.prototype.det.call( Matrix.cut( this, j, i));
                     // auto transpose
                 }
                 arr[i]=row;
