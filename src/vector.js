@@ -186,6 +186,18 @@ var Vector = Class.create({
             writable: true
         }
     }
+}),
+
+hVector = Class({
+    parent: Vector,
+    instance: {
+        horizontal: {
+            value: true,
+            enumerable: false,
+            configurable: true,
+            writable: true
+        }
+    }
 });
 
 #endif
