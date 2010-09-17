@@ -447,6 +447,15 @@ staticDescriptor = {
         configurable: true,
         writable: true
     },
+    like: {
+        value: function( arr){
+
+            return this.isRectangular( arr);
+        },
+        enumerable: false,
+        configurable: true,
+        writable: true
+    },
     isRectangular:{
         value: function( arr){
 
