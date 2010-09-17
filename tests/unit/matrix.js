@@ -232,10 +232,10 @@ YUI({
             Y.Assert.areEqual( 0, Matrix(7,7,0).det(), "gives NaN ?");
             Y.Assert.areEqual( Matrix.det(huge), Matrix(huge).det());
             Y.Assert.areEqual( Matrix.det(huge), Matrix(huge).transpose().det());
-            Y.Assert.areEqual( 147, Matrix([[2,9,9,4],
+            Y.Assert.isTrue( Math.abs( 147- Matrix([[2,9,9,4],
                                        [2,-3,12,8],
                                        [4,8,3,-5],
-                                       [1,2,6,4]]).det());
+                                       [1,2,6,4]]).det()) < Matrix.precision);
             Y.Assert.areEqual( 0, Matrix([[1,2,3],[4,5,6],[7,8,9]]).det());
         },
         
