@@ -22,6 +22,15 @@ staticDescriptor = {
         configurable: true,
         writable: true
     },
+    like: {
+        value: function( arr){
+            // returns true if arr is an array of arrays( of numbers)
+            return this.isRectangular( arr);
+        },
+        enumerable: false,
+        configurable: true,
+        writable: true
+    },
     isRectangular:{
         value: function( arr){
             // checks if a given array is rectangular
@@ -183,7 +192,7 @@ instanceDescriptor = {
         configurable: true,
         writable: true
     },
-    mult: {
+    multWMatrix: {
         value: function( other){
             // other is either another Matrix instance or a Matrix-like array
             // returns this*other
@@ -191,6 +200,21 @@ instanceDescriptor = {
                 throw new TypeError("this.mult( other): The matrices dimensions mismatch! this: "+ this.toString()+ " other: "+other);
             }
             return Matrix.wrap( MatrixBase.prototype.mult.call(this,other));
+        },
+        enumerable: false,
+        configurable: true,
+        writable: true
+    },
+    mult: {
+        value: function( other){
+            // Meta function
+            if( typeof other === "number"){
+                return this.scale( number);
+            } else if( Matrix.is( other) || Matrix.like( other)){
+                return this.multWMatrix( other);
+            } else if( other.toMatrix ){
+                return this.multWMatrix( other.toMatrix());
+            }
         },
         enumerable: false,
         configurable: true,
