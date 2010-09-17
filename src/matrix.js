@@ -297,6 +297,7 @@ instanceDescriptor = {
                                     rowi[ k] += rowj[ k];
                                 }
                             }
+                            break;
                         }
                     }
                     if( rowi[i]){
