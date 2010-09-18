@@ -170,13 +170,36 @@ var Vector = Class.create({
             configurable: true,
             writable: true
         },
+        multWMatrix: {
+            value: function( mat){
+                
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
         mult: {
             value: function( other){
                 var constr = this.constructor;
                 if( typeof other === "number"){
                     return this.scale( other);
-                } else if( Matrix.is( other)){
-                    return this.toMatrix().mult( other);
+                } else if( hVector.is( other) || hVector.like( other)){
+                    return (function(){
+                        // Matrix Product
+                        var n=this.length,i=n,j, that=[], row;
+                        while( i--){
+                            j=n;
+                            row=[];
+                            while( j--){
+                                row[ j] = this[i] * other[j];
+                            }
+                            that[i]=row;
+                        }
+                        return Matrix.create( that);
+                    }).call( this);
+                
+                } else if( Matrix.is( other) || Matrix.like( other)){
+                    return this.multWMatrix( other);
                 } else if( constr.is( other) || constr.like( other)){
                     return this.dot( other);
                 }
@@ -190,13 +213,21 @@ var Vector = Class.create({
 
 hVector = Class({
     parent: Vector,
+    "static": {
+        like: {
+            value: function( other){
+                return Vector.like( other) && other.horizontal;
+            }
+        }
+    },
     instance: {
         horizontal: {
             value: true,
             enumerable: false,
             configurable: true,
             writable: true
-        }
+        },
+        
     }
 });
 
