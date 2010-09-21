@@ -167,7 +167,9 @@ Class = function( obj){
         }
     }
 
-    klass = Object.defineProperties( klass, stat);
+    if( stat){
+        klass = Object.defineProperties( klass, stat);
+    }
     klass.prototype = Object.create( (par && par.prototype || Object.prototype), inst);
     klass.prototype = Object.defineProperty( klass.prototype, "constructor", {
         value: klass,
@@ -204,7 +206,60 @@ return Class;
 
 
 
+var Collection = (function(){
 
+var klass = Class({
+    "parent": Array,
+    "static":{
+        create: {
+            value: function( arr){
+                var that = Object.create( this.prototype),
+                    i=arr.length;
+                while( i--){
+                    that[ i]= arr[ i];
+                }
+                return that;
+            }
+        }
+    },
+    "instance":{
+         length: {
+              value: 0,
+              configurable: true
+         },
+         toArray: {
+             value: function(){
+                 return this.slice();
+             }
+         },
+         toString: {
+             value: function(){
+                 return this.slice().toString();
+             }
+         },
+
+
+
+
+
+    }
+});
+
+klass.prototype= (function( obj){
+    return Object.defineProperty( obj, 'length', {
+        get: function(){
+            return Object.keys(this).length;
+        },
+        set: function( biggest){
+            if( biggest >= this.length){
+                this[ biggest] = undefined;
+            }
+        }
+    });
+})(klass.prototype);
+
+return klass;
+})();
 var MatrixBase = (function(){
 var klass = Class.create({
     "parent": Array,
@@ -429,7 +484,7 @@ return klass;
 
 
 var Matrix= (function(namespace){
-"use strict";
+
 
 var Matrix,
     MatrixFn,
@@ -617,7 +672,7 @@ instanceDescriptor = {
         configurable: true,
         writable: true
     },
-    mult: {
+    multWMatrix: {
         value: function( other){
 
 
@@ -625,6 +680,21 @@ instanceDescriptor = {
                 throw new TypeError("this.mult( other): The matrices dimensions mismatch! this: "+ this.toString()+ " other: "+other);
             }
             return Matrix.wrap( MatrixBase.prototype.mult.call(this,other));
+        },
+        enumerable: false,
+        configurable: true,
+        writable: true
+    },
+    mult: {
+        value: function( other){
+
+            if( typeof other === "number"){
+                return this.scale( number);
+            } else if( Matrix.is( other) || Matrix.like( other)){
+                return this.multWMatrix( other);
+            } else if( other.toMatrix ){
+                return this.multWMatrix( other.toMatrix());
+            }
         },
         enumerable: false,
         configurable: true,
@@ -646,7 +716,7 @@ instanceDescriptor = {
                 row=[];
                 j=n;
                 while( j--){
-                    row[j] = ( (i^j) & 1 ? -1 : 1) * Matrix.det( Matrix.cut( this, j, i));
+                    row[j] = ( (i^j) & 1 ? -1 : 1) * Matrix.prototype.det.call( Matrix.cut( this, j, i));
 
                 }
                 arr[i]=row;
@@ -698,10 +768,59 @@ instanceDescriptor = {
     },
     det: {
         value: function(){
+
             if( !Matrix.isSquare( this)){
-                return 0;
+                return null;
             }
-            return Matrix.det( this.toArray());
+            var n= this.length, ret = 1;
+
+            if( n=== 1){
+                return this[0][0];
+            }
+            if( n=== 2){
+                return this[0][0] * this[1][1] - this[1][0] * this[0][1];
+            }
+            if( Matrix.isTriangular( this)){
+                while( n--){
+                    ret *= this[n][n];
+                }
+                return ret;
+            } else {
+
+
+
+                var i, j, k, fak, rowi, rowj, R=Matrix.deepArrayCopy( this);
+
+                for(i=0; i<n; i++){
+                    rowi = R[i];
+                    if( !rowi[i]){
+                        for( j=i+1; j<n; j++){
+                            rowj=R[j];
+                            if( rowj[i]){
+                                for( k=i; k<n; k++){
+                                    rowi[ k] += rowj[ k];
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    if( rowi[i]){
+                        for( j=i+1; j<n; j++){
+                            rowj= R[j];
+                            fak= rowj[i] / rowi[i];
+                            if( fak){
+                                for( k=i; k<n; k++){
+                                    rowj[k] -= rowi[k]*fak;
+                                }
+                            }
+                        }
+                        ret *= rowi[i];
+                    } else {
+                        return 0;
+                    }
+                }
+                return ret;
+            }
         },
         enumerable: false,
         configurable: true,
@@ -737,99 +856,232 @@ return Matrix;
 
 
 var Vector = Class.create({
-    parent: MatrixBase,
+    parent: Collection,
     "static":{
-        create: { value: function( arr, initial){
-                return this.wrap( arguments.length > 1 || typeof arr === "number" ? this.rectangle( arr, 1, initial) : arr);
+        like: {
+            value: function( obj){
+                 if( (Array.prototype.isPrototypeOf( obj) || "length" in obj) && typeof obj[0] === "number"){
+                      return true;
+                 } else {
+                      return false;
+                 }
             },
             enumerable: false,
             configurable: true,
             writable: true
         },
-        wrap: {
-            value: function( arr){
-                if( Array.prototype.isPrototypeOf( arr) && typeof arr[0] === "number"){
-                    return Vector.wrap([ arr]).transpose();
-                } else {
-                    return MatrixBase.wrap.call( this, arr);
+        sameDimensions: {
+            value: function( ){
+                var i = arguments.length, m= arguments[ --i].length;
+                while( i--){
+                    if( arguments[ i].length !== m){
+                        return false;
+                    }
                 }
+                return true;
             },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        standardScalarproduct: {
+            value: function( a, b){
+                if( !this.sameDimensions( a, b)){
+                    throw new TypeError("Vector-Dimensions mismatch!");
+                }
+                var ret=0, i=a.length;
+                while( i--){
+                    ret += a[ i] * b[ i];
+                }
+                return ret;
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        precision: {
+            value: 1e-6,
             enumerable: false,
             configurable: true,
             writable: true
         }
     },
     "instance":{
-        "add":{ value: function( other){
-                if( this.length !== other.length){
-                    throw new TypeError("this.add( other): Vector dimensions mismatch!");
-                }
-                return Vector.wrap( MatrixBase.prototype.add.call(this,other));
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "mult":{ value: function( other){
-                return MatrixBase.wrap( MatrixBase.prototype.mult.call(this,other));
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "magnitude":{
-            value:function(){
-
-                var that= this.coords(),
-                    sum= 0, i= that.length;
-
-                while( i--){
-                    sum += Math.pow( that[i][0], 2);
-                }
-                return Math.pow( sum, 1/2);
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "dot":{ value: function( other){
-                var sum=0, i=this.length;
-                if( i !== other.length){
-                    throw new TypeError("this.dot( other): Vector dimensions mismatch!");
-                }
-                while( i--){
-                    sum += this[i] * other[i];
-                }
-                return sum;
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        normalize:{
-            value:function(){
-                return this.scale( 1/this.magnitude());
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
-        "coords":{
-            value: function(){
-
-
-
-
-                if( this.length < this [0].length){
-                    return this.transpose();
+        sameDimensions: {
+            value: function( other){
+                if( arguments.length === 1){
+                    return this.length === other.length;
                 } else {
-                    return this.copy();
+                    return this.constructor.sameDimensions.apply( this.constructor, arguments.push( this));
+                }
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        toArray: {
+            value: function(){
+                return this.slice();
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        copy: {
+            value: function(){
+                return this.constructor.create( this.slice());
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        toMatrix: {
+            value: function(){
+                var that = [], i= this.length;
+                while( i--){
+                    that[ i]= [ this[ i]];
+                }
+                return Matrix.create( that);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        magnitude: {
+            value: function(){
+                var ret=0, i=this.length;
+                while( i--){
+                    ret += this[i]*this[i];
+                }
+                return Math.pow( ret, .5);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        equals: {
+            value: function( other, precision){
+                precision = precision === undefined ? this.constructor.precision : precision;
+                if( !this.sameDimensions( other))
+                    return false;
+                var i= this.length;
+                while( i--){
+                    if( Math.abs( this[ i] - other[ i]) > precision){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        scale: {
+            value: function( lambda){
+                var that = [], i= this.length;
+                while( i--){
+                    that[ i]= this[ i]* lambda;
+                }
+                return this.constructor.create( that);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        normalize: {
+            value: function(){
+                return this.scale( 1/ this.magnitude());
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        add: {
+            value: function( other){
+                var that = [], i=this.length;
+                if( !this.sameDimensions( other))
+                    throw new TypeError("Vector-Dimensions mismatch");
+                while( i--){
+                    that[ i] = this[ i]+ other[ i];
+                }
+                return this.constructor.create( that);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        dot: {
+            value: function( other){
+                if( !this.sameDimensions( other))
+                    throw new TypeError("Vector-Dimension mismatch");
+                var ret = 0, i=this.length;
+                while( i--){
+                    ret += this[ i] * other[ i];
+                }
+                return ret;
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        multWMatrix: {
+            value: function( mat){
+
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        mult: {
+            value: function( other){
+                var constr = this.constructor;
+                if( typeof other === "number"){
+                    return this.scale( other);
+                } else if( hVector.is( other) || hVector.like( other)){
+                    return (function(){
+
+                        var n=this.length,i=n,j, that=[], row;
+                        while( i--){
+                            j=n;
+                            row=[];
+                            while( j--){
+                                row[ j] = this[i] * other[j];
+                            }
+                            that[i]=row;
+                        }
+                        return Matrix.create( that);
+                    }).call( this);
+
+                } else if( Matrix.is( other) || Matrix.like( other)){
+                    return this.multWMatrix( other);
+                } else if( constr.is( other) || constr.like( other)){
+                    return this.dot( other);
                 }
             },
             enumerable: false,
             configurable: true,
             writable: true
         }
+    }
+}),
+
+hVector = Class({
+    parent: Vector,
+    "static": {
+        like: {
+            value: function( other){
+                return Vector.like( other) && other.horizontal;
+            }
+        }
+    },
+    instance: {
+        horizontal: {
+            value: true,
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+
     }
 });
 
