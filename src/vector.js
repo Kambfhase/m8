@@ -99,7 +99,7 @@ var Vector = Class.create({
                 while( i--){
                     ret += this[i]*this[i];
                 }
-                return Math.pow( ret, .5);
+                return Math.sqrt( ret);
             },
             enumerable: false,
             configurable: true,
