@@ -8,9 +8,9 @@ var Matrix = Class({
     "static": {
         // this object holds the Properties to be added to the Matrix function.
         create:{ 
-            value: function( arr){
+            value: function( arr, b, c){
                 // returns a new Matrix
-                return this.wrap( arguments.length > 1 ? this.rectangle.apply( this, arguments) : arr);
+                return this.wrap( b ? this.rectangle( arr, b, c) : arr);
             },
             enumerable: false,
             configurable: true,
