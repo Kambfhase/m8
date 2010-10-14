@@ -12,23 +12,34 @@ var klass = Class({
                     that[ i]= arr[ i];
                 }
                 return that;
-            }
+            },
+            configurable: true,
+            writable: true,
+            enumerable: false
         }
     },
     "instance":{
          length: {
               value: 0,
-              configurable: true
+              configurable: true,
+            writable: true,
+            enumerable: false
          },
          toArray: {
              value: function(){
                  return this.slice();
-             }
+             },
+            configurable: true,
+            writable: true,
+            enumerable: false
          },
          toString: {
              value: function(){
                  return this.slice().toString();
-             }
+             },
+            configurable: true,
+            writable: true,
+            enumerable: false
          },
          //toSource: {
          //    value: function(){
