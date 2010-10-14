@@ -14,6 +14,7 @@ var Class = (function( Object){
 
 var Class,
     skip = Object.getOwnPropertyNames(function(){});
+    skip.push("prototype");
 
 Class = function( obj){
     var klass = function(){
