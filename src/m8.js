@@ -7,7 +7,7 @@
 (function( namespace){
 
 if( typeof namespace === "string"){
-    namespace = this[ namespace];
+    namespace = this[ namespace] = {};
 }
 
 #endif
@@ -23,6 +23,9 @@ if( typeof namespace === "string"){
 
 #if NAMESPACE
 
-})( NAMESPACE || this);
+namespace.Matrix = Matrix;
+namespace.Vector = Vector;
+
+})( "m8" || this);
 
 #endif
