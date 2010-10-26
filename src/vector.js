@@ -265,7 +265,7 @@ hVector = Class({
         },
         multWVector: {
             value: function( other){
-                return Matrix.create( [[this.dot( other)]]);
+                return this.dot( other);
             },
             enumerable: false,
             configurable: true,
