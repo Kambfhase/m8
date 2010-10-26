@@ -270,7 +270,7 @@ hVector = Class({
             enumerable: false,
             configurable: true,
             writable: true
-        }
+        },
         mult: {
             value: function( other){
                 var constr = this.constructor;
