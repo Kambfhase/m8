@@ -356,6 +356,39 @@ var Matrix = Class({
             configurable: true,
             writable: true
         },
+        pow: {
+            value: function( e){
+                // multiply this matrix e-1 times with itself
+                e = ~~e; // convert e to an integer
+                var n=this.length;
+                if( !e){
+                    return Matrix.identity( n);
+                }
+                if( e === 1){
+                    return this.copy();
+                }
+                // the trick here is to reduce the number of multiplications.
+                // say you need A^9 you could do A^9 = A*A*A*A*A*A*A*A*A
+                // that'd be 8 multiplications. But there is a faster way.
+                // You calculate A^2= A*A and A^4 = A^2 * A^2 and A^8 = A^4 * A^4.
+                // finally A^9 = A^8 * A which takes only 4 multiplications!
+                var cache = this, l=2, ret= e & 1 ? this : Matrix.identity( n);
+                
+                while( l <= e){
+                    cache = cache.mult( cache);
+                    if( l & e){
+                        ret = ret.mult( cache);
+                    }
+                    
+                    l <<= 1;
+                }
+
+                return ret; 
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
         adjugate: {
             value: function(){
                 // returns the adjugate matrix
