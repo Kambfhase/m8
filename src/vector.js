@@ -222,6 +222,14 @@ hVector = Class({
             configurable: true,
             writable: true
         },
+        toMatrix: {
+            value: function(){
+                return Matrix.create( this.slice());
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
         
     }
 });
