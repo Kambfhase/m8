@@ -170,26 +170,31 @@ var Vector = Class.create({
             configurable: true,
             writable: true
         },
+        multWhVector: {
+            value: function( other){
+                // multiplying a vertical vector with a horizontal one returns a matrix!
+                var n=this.length,i=n,j, that=[], row;
+                while( i--){
+                    j=n;
+                    row=[];
+                    while( j--){
+                        row[ j] = this[i] * other[j];
+                    }
+                    that[i]=row;
+                }
+                return Matrix.create( that);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
         mult: {
             value: function( other){
                 var constr = this.constructor;
                 if( typeof other === "number"){
                     return this.scale( other);
                 } else if( hVector.is( other) || hVector.like( other)){
-                    return (function(){
-                        // Matrix Product
-                        var n=this.length,i=n,j, that=[], row;
-                        while( i--){
-                            j=n;
-                            row=[];
-                            while( j--){
-                                row[ j] = this[i] * other[j];
-                            }
-                            that[i]=row;
-                        }
-                        return Matrix.create( that);
-                    }).call( this);
-                
+                    return this.multWhVector( other);                
                 } else if( constr.is( other) || constr.like( other)){
                     return this.dot( other);
                 }
