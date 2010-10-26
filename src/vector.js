@@ -230,7 +230,64 @@ hVector = Class({
             configurable: true,
             writable: true
         },
-        
+        multWhVector: {
+            value: function( other){
+                // multiplying a horizontal vector with an other horizontal vector does not make sense.
+                // fall back to dot product.
+                return this.dot( other);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        multWMatrix: {
+            value: function( M){
+                var n=this.length;
+                if( n !== M.length){
+                    throw "Dimension mismatch!";
+                }
+                
+                var that = [], i=n,j,sum;
+                
+                while( i--){
+                    sum=0;
+                    j=n;
+                    while( j--){
+                        sum += this[i] * M[j][i];
+                    }
+                    that[i]=sum;
+                }
+                return this.constructor( that);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
+        multWVector: {
+            value: function( other){
+                return Matrix.create( [[this.dot( other)]]);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        }
+        mult: {
+            value: function( other){
+                var constr = this.constructor;
+                if( typeof other === "number"){
+                    return this.scale( other);
+                } else if( Matrix.is( other) ){
+                    return this.multWMatrix( other);
+                } else if( constr.is( other) || constr.like( other)){
+                    return this.dot( other);
+                } else if( hVector.is( other) || hVector.like( other)){
+                    return this.multWVector( other);                
+                } 
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        }
     }
 });
 
