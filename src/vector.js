@@ -170,14 +170,6 @@ var Vector = Class.create({
             configurable: true,
             writable: true
         },
-        multWMatrix: {
-            value: function( mat){
-                
-            },
-            enumerable: false,
-            configurable: true,
-            writable: true
-        },
         mult: {
             value: function( other){
                 var constr = this.constructor;
@@ -198,8 +190,6 @@ var Vector = Class.create({
                         return Matrix.create( that);
                     }).call( this);
                 
-                } else if( Matrix.is( other) || Matrix.like( other)){
-                    return this.multWMatrix( other);
                 } else if( constr.is( other) || constr.like( other)){
                     return this.dot( other);
                 }
