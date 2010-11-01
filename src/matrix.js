@@ -320,20 +320,22 @@ var Matrix = Class({
                     throw new TypeError("this.mult( other): The matrices dimensions mismatch! this: "+ this.toString()+ " other: "+other);
                 }
                 var that = [],
-                    i=0,j,k, sum,
-                    cols = other[0].length;
-                for(;i< this.length; ++i){ 
+                    i=0,j,k,n=this.length,m, sum,
+                    cols = other[0].length, rowThis, rowThat;
+                for(;i< n; ++i){ 
                     // for all this-rows
-                    that[i] = [];
+                    rowThat=[];
+                    rowThis=this[i];
                     for(j=0;j< cols; ++j){ 
                         // for each other-cols
                         sum = 0;
                         // walk through the col-row pair multiply the values and sum them up
-                        for(k=0; k<this[i].length; ++k){
-                            sum += this[i][k]*other[k][j];
+                        for(k=0, m=rowThis.length; k<m; ++k){
+                            sum += rowThis[k]*other[k][j];
                         }
-                        that[i][j] = sum;
+                        rowThat[j] = sum;
                     }
+                    that[i]=rowThat;
                 }
                 return this.constructor.create(that);
             },
