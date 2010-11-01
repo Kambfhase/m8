@@ -523,17 +523,15 @@ var Matrix = Class({
                 if( !Matrix.sameDimensions( this, other)){
                     return false;
                 }
-                var i= this.length, j;
-                if( i !== other.length){
-                    return false;
-                }
+                var i= this.length, j, rowThis, rowThat;
+
                 while( i--){
-                    j= this[ i].length;
-                    if( j !== other[i].length){
-                        return false;
-                    }
+                    rowThis = this[i];
+                    rowThat = other[i];
+                    j=rowThis.length;
+
                     while( j--){
-                        if( Math.abs( this[i][j] - other[i][j]) > Matrix.precision){
+                        if( Math.abs( rowThis[j] - rowThat[j]) > Matrix.precision){
                             return false;
                         }
                     }
