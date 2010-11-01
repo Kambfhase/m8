@@ -91,6 +91,10 @@ var Matrix = Class({
         isRectangular:{
             value: function( arr){
                 // checks if a given array is rectangular
+                if( !arr || !arr.length || !arr[0].length){
+                    return false;
+                }
+                
                 var i=1, n= arr[0].length;
                 for(; i<arr.length; ++i){
                     if( arr[i].length !== n){
