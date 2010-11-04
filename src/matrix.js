@@ -324,17 +324,47 @@ var Matrix = Class({
                     throw new TypeError("this.mult( other): The matrices dimensions mismatch! this: "+ this.toString()+ " other: "+other);
                 }
                 var that = [],
-                    i=0,j,k,n=this.length,m, sum,
-                    cols = other[0].length, rowThis, rowThat;
+                    i=0,j,k,
+                    n=this.length,
+                    m=other[0].length,
+                    o=other.length,
+                    sum, rowThis, rowThat;
+                    
+                if( o=== 1){
+                    for(;i< n; i++){
+                        //rowThat=[];
+                        rowThis=this[i];
+                        for(j=0;j< m; ++j){
+                            rowThat = [ rowThis[0]*other[0][j]];
+                        }
+                        that[i]=rowThat;
+                    }
+                    return this.constructor.create( that);
+                }
+                if( o=== 2){
+                    i=n;
+                    //for(;i< n; i++){
+                    while( i--){
+                        rowThat=[];
+                        rowThis=this[i];
+                        j=m;
+                        while( j--){
+                        //for(j=0;j< m; ++j){
+                            rowThat[j] = rowThis[0]*other[0][j]+rowThis[1]*other[1][j];
+                        }
+                        that[i]=rowThat;
+                    }
+                    return this.constructor.create( that);
+                }
                 for(;i< n; ++i){ 
                     // for all this-rows
                     rowThat=[];
                     rowThis=this[i];
-                    for(j=0;j< cols; ++j){ 
+                    for(j=0;j< m; ++j){ 
                         // for each other-cols
                         sum = 0;
                         // walk through the col-row pair multiply the values and sum them up
-                        for(k=0, m=rowThis.length; k<m; ++k){
+                        for(k=0; k<o; ++k){
                             sum += rowThis[k]*other[k][j];
                         }
                         rowThat[j] = sum;
