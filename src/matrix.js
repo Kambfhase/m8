@@ -525,8 +525,8 @@ var Matrix = Class({
                                     for( k=i; k<n; k++){
                                         rowi[ k] += rowj[ k];
                                     }
+                                    break;
                                 }
-                                break;
                             }
                         }
                         if( rowi[i]){
