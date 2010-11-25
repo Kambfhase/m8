@@ -95,8 +95,13 @@ var Complex = Class({
         },
         mult: {
             value: function( other){
-                return this.constructor.create( this.r * other.r - this.i * other.i,
-                    this.r * other.i + this.i * other.r);
+                if( typeof other == "number"){
+                    return this.constructor.create( other* this.r, other* this.i);
+                } else {
+                    return this.constructor.create( 
+                        this.r * other.r - this.i * other.i,
+                        this.r * other.i + this.i * other.r );
+                }
             },
             enumerable: false,
             configurable: true,
