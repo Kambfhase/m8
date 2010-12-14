@@ -195,8 +195,9 @@ YUI({
             Y.Assert.isFunction( Matrix.prototype.mult);
             
             Y.Assert.isTrue( Matrix.is(Matrix([[1]]).mult([[1]])));
-            Y.Assert.isTrue( Matrix.identity(3).mult( Matrix.identity(3)).equals( Matrix.identity(3)));
-            Y.Assert.isTrue( Matrix([[1,2],[3,4]]).mult([[5,6],[7,8]]).equals([[19,22],[43,50]]));
+            Y.Assert.isTrue( Matrix([[2]]).mult([[3]]).equals([[6]]), "1");
+            Y.Assert.isTrue( Matrix.identity(3).mult( Matrix.identity(3)).equals( Matrix.identity(3)),"2");
+            Y.Assert.isTrue( Matrix([[1,2],[3,4]]).mult([[5,6],[7,8]]).equals([[19,22],[43,50]]),"3");
             Y.Assert.isTrue( Matrix([[5,6],[7,8]]).mult([[1,2],[3,4]]).equals([[23,34],[31,46]]));
             Y.Assert.isTrue( Matrix.identity(9).mult(huge).equals(huge));
             Y.Assert.isTrue( Matrix([[1,2],[3,4],[0,-1]]).mult([[5,6],[7,8]]).equals([[19,22],[43,50],[-7,-8]]));
@@ -237,6 +238,16 @@ YUI({
                                        [4,8,3,-5],
                                        [1,2,6,4]]).det()) < Matrix.precision);
             Y.Assert.areEqual( 0, Matrix([[1,2,3],[4,5,6],[7,8,9]]).det());
+            Y.Assert.areSame( 512, Matrix.create( 
+                [[0,0,0,0,0,0,0,0,2],
+                [0,0,0,0,0,0,0,2,0],
+                [0,0,0,0,0,0,2,0,0],
+                [0,0,0,0,0,2,0,0,0],
+                [0,0,0,0,2,0,0,0,0],
+                [0,0,0,2,0,0,0,0,0],
+                [0,0,2,0,0,0,0,0,0],
+                [0,2,0,0,0,0,0,0,0],
+                [2,0,0,0,0,0,0,0,0]]).det());
         },
         
         testAdjugate: function(){
