@@ -377,6 +377,18 @@ var Matrix = Class({
             configurable: true,
             writable: true
         },
+        multWVector: {
+            value: function( other){
+                var constr= other.constructor;
+                
+                return constr( this.multWMatrix( other.toMatrix()).map(function(a){
+                    return a[0];
+                }));
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+        },
         mult: {
             value: function( other){
                 // Meta function
@@ -384,6 +396,8 @@ var Matrix = Class({
                     return this.scale( other);
                 } else if( Matrix.is( other) || Matrix.like( other)){
                     return this.multWMatrix( other);
+                } else if( Vector.is( other)){
+                    return this.multWVector( other);
                 } else if( other.toMatrix ){
                     return this.multWMatrix( other.toMatrix());
                 }
