@@ -1,5 +1,5 @@
 /*!
- * m8 - JavaScript Math Library - v0.2
+ * m8 - JavaScript Math Library - v0.3
  * by Kambfhase
  * released under MIT License 
  *
