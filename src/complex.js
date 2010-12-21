@@ -33,6 +33,18 @@ var Complex = Class({
             enumerable: false,
             configurable: true,
             writable: true
+        },
+        exp: {
+            value: function( c){
+                // returns e^c
+                var f = Math.exp( c.r),
+                    g = Math.cos( c.i),
+                    h = Math.sin( c.i);
+                return Complex( f*g, f*h);
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
         }
     },
     "instance":{
